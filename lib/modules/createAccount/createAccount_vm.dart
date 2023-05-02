@@ -6,7 +6,7 @@ import 'connector.dart';
 
 class CreateAccount_vm extends BaseViewModel<createAccountNavigator> {
   void createAccount(String Name, String phone, String email, String pass,
-      String confirmPass) async {
+      String confirmPass, String address) async {
     try {
       navigator?.showLoading();
       final credential =
@@ -19,7 +19,8 @@ class CreateAccount_vm extends BaseViewModel<createAccountNavigator> {
           id: credential.user?.uid ?? "",
           Name: Name,
           phone: phone,
-          email: email);
+          email: email,
+          address: address);
       DataBaseUtils.addUserToFireStore(user);
       navigator?.hideDialog();
       navigator?.goHome(user);

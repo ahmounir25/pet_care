@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pet_care/models/Pet.dart';
 
 import '../models/myUser.dart';
 
@@ -33,6 +34,29 @@ class DataBaseUtils {
   static Future<myUser?> readUserFromFirestore(String id) async {
     DocumentSnapshot<myUser> userRef = await getUsersCollection().doc(id).get();
     return userRef.data();
+  }
+
+
+  static CollectionReference<Pet> getPetsCollection() {
+    return FirebaseFirestore.instance
+        .collection(Pet.collectionName)
+        .withConverter<Pet>(
+      fromFirestore: (snapshot, options) {
+        return Pet.fromJson(snapshot.data()!);
+      },
+      toFirestore: (value, options) => value.toJson(),
+    );
+  }
+
+  static Future<void> addPetToFireStore(Pet pet) {
+    var docRef = getPetsCollection().doc();
+    pet.id = docRef.id;
+       return docRef.set(pet);
+  }
+
+  static Future<Pet?> readPetFromFirestore(String id) async {
+    DocumentSnapshot<Pet> petRef = await getPetsCollection().doc(id).get();
+    return petRef.data();
   }
 
   // static Future<void> addRoomToFirebase(Room room) {

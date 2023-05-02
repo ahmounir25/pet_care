@@ -32,6 +32,7 @@ class _createAccountScreenState
   var fNameController = TextEditingController();
   var phoneController = TextEditingController();
   var confirmPassController = TextEditingController();
+  var addressController = TextEditingController();
 
   @override
   void initState() {
@@ -82,7 +83,7 @@ class _createAccountScreenState
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
-                                  return "Please Enter first Name ...";
+                                  return "Please Enter Full Name ";
                                 }
                                 return null;
                               },
@@ -106,7 +107,7 @@ class _createAccountScreenState
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
-                                  return "Please Enter last Name ...";
+                                  return "Please Enter Phone Number";
                                 }
                                 return null;
                               },
@@ -135,7 +136,31 @@ class _createAccountScreenState
                                 if (value == null ||
                                     value!.isEmpty ||
                                     emailValid == false) {
-                                  return "Please Enter Email ...";
+                                  return "Please Enter Email";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              controller: addressController,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                  hintText: "Address",
+                                  border: OutlineInputBorder(
+                                    gapPadding: 3,
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                  )),
+                              validator: (value) {
+                                if (value == null || value!.isEmpty) {
+                                  return "Please Enter Your Address ";
                                 }
                                 return null;
                               },
@@ -160,7 +185,7 @@ class _createAccountScreenState
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
-                                  return "Please Enter Password ...";
+                                  return "Please Enter Password";
                                 }
                                 return null;
                               },
@@ -184,10 +209,10 @@ class _createAccountScreenState
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
-                                  return "Please Enter Password ...";
+                                  return "Please Enter Password Again";
                                 }
                                 else if(value!=passController.text){
-                                  return "Please Enter matched password ...";
+                                  return "Please Enter matched password";
                                 }
                                 return null;
                               },
@@ -232,7 +257,7 @@ class _createAccountScreenState
   void createAccount() async {
     if (FormKey.currentState!.validate()) {
       viewModel.createAccount(fNameController.text, phoneController.text, emailController.text,
-          passController.text,confirmPassController.text);
+          passController.text,confirmPassController.text,addressController.text);
     }
   }
 
