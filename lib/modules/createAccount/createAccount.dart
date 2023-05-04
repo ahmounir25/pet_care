@@ -2,13 +2,17 @@
 
 // import '../../providers/userProvider.dart';
 
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
 import 'package:pet_care/modules/createAccount/connector.dart';
 import 'package:pet_care/modules/createAccount/createAccount_vm.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
-
+import 'package:path/path.dart' as Path;
 
 import '../../base.dart';
 import '../../models/myUser.dart';
@@ -26,14 +30,50 @@ class _createAccountScreenState
     extends BaseView<CreateAccount_vm, createAccountScreen>
     implements createAccountNavigator {
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
-
+  String? ImageURL;
   var emailController = TextEditingController();
   var passController = TextEditingController();
   var fNameController = TextEditingController();
   var phoneController = TextEditingController();
   var confirmPassController = TextEditingController();
   var addressController = TextEditingController();
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = Path.basename(_photo!.path);
+    // final destination = '${emailController.text}';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child("UserImages/$fileName");
+      await ref.putFile(_photo!);
+       await ref.getDownloadURL().then((value) {
+          ImageURL=value;
+        });
+
+    } catch (e) {
+      print('error occured');
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -43,6 +83,7 @@ class _createAccountScreenState
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
       create: (context) {
         return viewModel;
@@ -58,7 +99,7 @@ class _createAccountScreenState
                 children: [
                   // Text('Welcome',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 30),),
                   Image(image: AssetImage('assets/images/welcome.png'),width: MediaQuery.of(context).size.width*.8),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Form(
@@ -67,6 +108,24 @@ class _createAccountScreenState
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showPicker(context);
+                                },
+                                child: _photo != null ? CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage:  FileImage(
+                                        _photo!,
+                                      )):CircleAvatar(
+                                  radius: 60,
+
+                                  backgroundImage: AssetImage('assets/images/appLogo.jpg',),
+                                ),
+                              ),
+                            ), SizedBox(
+                              height: 10,
+                            ),
                             TextFormField(
                               controller: fNameController,
                               textInputAction: TextInputAction.next,
@@ -257,8 +316,38 @@ class _createAccountScreenState
   void createAccount() async {
     if (FormKey.currentState!.validate()) {
       viewModel.createAccount(fNameController.text, phoneController.text, emailController.text,
-          passController.text,confirmPassController.text,addressController.text);
+          passController.text,confirmPassController.text,addressController.text,ImageURL);
     }
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Gallery'),
+                      onTap: () {
+                        imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  // new ListTile(
+                  //   leading: new Icon(Icons.photo_camera),
+                  //   title: new Text('Camera'),
+                  //   onTap: () {
+                  //     imgFromCamera();
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -267,11 +356,12 @@ class _createAccountScreenState
   }
 
   @override
-void goHome(myUser user) {
-  var provider = Provider.of<UserProvider>(context, listen: false);
-  provider.user = user;
-  Navigator.pushReplacementNamed(context, homeScreen.routeName);
-}
+  void goHome(myUser user) {
+    var provider = Provider.of<UserProvider>(context, listen: false);
+    provider.user = user;
+    Navigator.pushReplacementNamed(context, homeScreen.routeName);
+  }
+
 
 }
 

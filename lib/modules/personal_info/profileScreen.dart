@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/myUser.dart';
@@ -18,37 +22,55 @@ class profileScreen extends StatefulWidget {
 }
 
 class _profileScreenState extends State<profileScreen> {
+//   getUrl()async{
+//   final ref = FirebaseStorage.instance.ref().child();
+// // no need of the file extension, the name will do fine.
+//   var url = await ref.getDownloadURL();
+// }
+// String? imageURL;
+  // XFile? image;
+  // final ImagePicker picker = ImagePicker();
+  //
+  // Future getImage(ImageSource media) async {
+  //   // var provider = Provider.of<UserProvider>(context, listen: false);
+  //   var img = await picker.pickImage(source: media);
+  //   setState(() {
+  //     image = img;
+  //   });
+  //
+  // }
+
   var petNamecntroller = TextEditingController();
   var ageController = TextEditingController();
   var typeController = TextEditingController();
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(
-          color: MyColors.primaryColor, // <-- SEE HERE
+          color: MyColors.primaryColor,
         ),
-        // centerTitle: true,
-        // title: Text('Profile'),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            padding: EdgeInsets.only(
-              top: 10,
-            ),
-            alignment: Alignment.center,
-            child: CircleAvatar(
-              backgroundImage: AssetImage("assets/images/appLogo.jpg"),
-              radius: 100,
-            ),
-          ),
+          provider.user?.Image != null
+              ? CircleAvatar(
+                  radius: 100,
+                  backgroundImage:
+                  NetworkImage(provider.user?.Image ?? "")
+                )
+              : CircleAvatar(
+                  radius: 100,
+                  backgroundImage: AssetImage(
+                    "assets/images/appLogo.jpg",
+                    // fit: BoxFit.cover,
+                  ),
+                ),
           SizedBox(
             height: 10,
           ),
@@ -82,7 +104,9 @@ class _profileScreenState extends State<profileScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: MyColors.primaryColor,
+                    ),
                   );
                 } else if (snapshot.hasError) {
                   return Text('Some Thing went Wrong ...');
@@ -91,8 +115,8 @@ class _profileScreenState extends State<profileScreen> {
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     // print(pet?.length);
-                    return petInfoWidget(
-                        pet![index].Name, pet![index].gender,pet![index].type, pet![index].age!);
+                    return petInfoWidget(pet![index].Name, pet![index].gender,
+                        pet![index].type, pet![index].age!);
                   },
                   itemCount: pet?.length ?? 0,
                 );
@@ -121,9 +145,9 @@ class _profileScreenState extends State<profileScreen> {
     'Fish',
     'Other'
   ];
-  List<String>gender=["Male","Female"];
+  List<String> gender = ["Male", "Female"];
   var selectedValue = 'Dog';
-  var selectedGender='Male';
+  var selectedGender = 'Male';
 
   void floatingButtonAction() {
     showModalBottomSheet(
@@ -162,13 +186,13 @@ class _profileScreenState extends State<profileScreen> {
                                   hintText: "Pet Name ",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                        BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                        BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -258,13 +282,13 @@ class _profileScreenState extends State<profileScreen> {
                                   hintText: "Pet Age in Months ",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                        BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                        BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -289,7 +313,8 @@ class _profileScreenState extends State<profileScreen> {
                                           : null,
                                       provider.user!.Name,
                                       provider.user!.id,
-                                      selectedValue,selectedGender);
+                                      selectedValue,
+                                      selectedGender);
                                   petNamecntroller.text = '';
                                   ageController.text = '';
                                   // Navigator.pop(context);
@@ -309,8 +334,7 @@ class _profileScreenState extends State<profileScreen> {
     );
   }
 
-  void addPet(
-      String name, int? age, String ownerName, String ownerID, String type,String gender) {
+  void addPet(String name, int? age, String ownerName, String ownerID, String type, String gender) {
     if (FormKey.currentState!.validate()) {
       // showLoading();
       Pet pet = Pet(
@@ -345,4 +369,6 @@ class _profileScreenState extends State<profileScreen> {
       },
     );
   }
+
+
 }
