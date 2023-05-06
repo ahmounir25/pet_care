@@ -7,6 +7,7 @@ import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
 import 'package:pet_care/modules/Login/loginScreen.dart';
 import 'package:pet_care/modules/createAccount/createAccount.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
+import 'package:pet_care/modules/petInfo/petInfoScreen.dart';
 import 'package:pet_care/providers/userProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName:(context) => LoginScreen(),
         homeScreen.routeName:(context) => homeScreen(),
         profileScreen.routeName:(context) => profileScreen(),
+        petInfoScreen.routeName:(context) => petInfoScreen(),
       },
     );
   }

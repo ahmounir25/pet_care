@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
@@ -11,6 +13,8 @@ import 'package:pet_care/models/myUser.dart';
 import 'package:pet_care/modules/personal_info/petInfoWidget.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart' as Path;
 
 import '../../providers/userProvider.dart';
 
@@ -22,28 +26,49 @@ class profileScreen extends StatefulWidget {
 }
 
 class _profileScreenState extends State<profileScreen> {
-//   getUrl()async{
-//   final ref = FirebaseStorage.instance.ref().child();
-// // no need of the file extension, the name will do fine.
-//   var url = await ref.getDownloadURL();
-// }
-// String? imageURL;
-  // XFile? image;
-  // final ImagePicker picker = ImagePicker();
-  //
-  // Future getImage(ImageSource media) async {
-  //   // var provider = Provider.of<UserProvider>(context, listen: false);
-  //   var img = await picker.pickImage(source: media);
-  //   setState(() {
-  //     image = img;
-  //   });
-  //
-  // }
-
   var petNamecntroller = TextEditingController();
   var ageController = TextEditingController();
   var typeController = TextEditingController();
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
+  String? ImageURL;
+
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = Path.basename(_photo!.path);
+    // final destination = '${emailController.text}';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child("PetsImages/$fileName");
+      await ref.putFile(_photo!);
+      await ref.getDownloadURL().then((value) {
+        ImageURL = value;
+      });
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<UserProvider>(context);
@@ -61,13 +86,12 @@ class _profileScreenState extends State<profileScreen> {
           provider.user?.Image != null
               ? CircleAvatar(
                   radius: 100,
-                  backgroundImage:
-                  NetworkImage(provider.user?.Image ?? "")
-                )
+                  backgroundImage: NetworkImage(provider.user?.Image ?? ""))
               : CircleAvatar(
+                  backgroundColor: Colors.grey.shade300,
                   radius: 100,
                   backgroundImage: AssetImage(
-                    "assets/images/appLogo.jpg",
+                    "assets/images/defaultUser.png",
                     // fit: BoxFit.cover,
                   ),
                 ),
@@ -115,8 +139,7 @@ class _profileScreenState extends State<profileScreen> {
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     // print(pet?.length);
-                    return petInfoWidget(pet![index].Name, pet![index].gender,
-                        pet![index].type, pet![index].age!);
+                    return petInfoWidget(pet![index]);
                   },
                   itemCount: pet?.length ?? 0,
                 );
@@ -166,7 +189,7 @@ class _profileScreenState extends State<profileScreen> {
                   ),
                   color: Colors.white,
                 ),
-                height: MediaQuery.of(context).size.height * .65,
+                height: MediaQuery.of(context).size.height * .8,
                 child: Container(
                   padding: EdgeInsets.only(top: 10, right: 20, left: 20),
                   child: Column(
@@ -178,6 +201,53 @@ class _profileScreenState extends State<profileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Center(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {});
+                                    _showPicker(context);
+                                  },
+                                  child: _photo != null
+                                      ? CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage: FileImage(
+                                            _photo!,
+                                          ))
+                                      : AvatarGlow(
+                                          endRadius: 60,
+                                          glowColor: Colors.purpleAccent,
+                                          duration:
+                                              Duration(milliseconds: 2000),
+                                          repeat: true,
+                                          showTwoGlows: true,
+                                          repeatPauseDuration:
+                                              Duration(milliseconds: 100),
+                                          child: Material(
+                                            // Replace this child with your own
+                                            elevation: 0,
+                                            shape: CircleBorder(),
+                                            child: CircleAvatar(
+                                              radius: 40,
+                                              backgroundColor:
+                                                  Colors.grey.shade300,
+                                              backgroundImage: AssetImage(
+                                                'assets/images/AddImage.png',
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text('You Should Add Pet\'s Image',
+                                style: TextStyle(
+                                  color: MyColors.primaryColor,
+                                  decoration: TextDecoration.underline,
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
                             TextFormField(
                               textInputAction: TextInputAction.next,
                               controller: petNamecntroller,
@@ -297,6 +367,10 @@ class _profileScreenState extends State<profileScreen> {
                                 return null;
                               },
                             ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+
                             SizedBox(
                               height: 20,
                             ),
@@ -314,9 +388,9 @@ class _profileScreenState extends State<profileScreen> {
                                       provider.user!.Name,
                                       provider.user!.id,
                                       selectedValue,
-                                      selectedGender);
-                                  petNamecntroller.text = '';
-                                  ageController.text = '';
+                                      selectedGender,
+                                      ImageURL);
+
                                   // Navigator.pop(context);
                                 },
                                 child: Text('Add pet')),
@@ -334,8 +408,9 @@ class _profileScreenState extends State<profileScreen> {
     );
   }
 
-  void addPet(String name, int? age, String ownerName, String ownerID, String type, String gender) {
-    if (FormKey.currentState!.validate()) {
+  void addPet(String name, int? age, String ownerName, String ownerID,
+      String type, String gender, String? Image) {
+    if (FormKey.currentState!.validate() && Image != null) {
       // showLoading();
       Pet pet = Pet(
           Name: name,
@@ -343,10 +418,45 @@ class _profileScreenState extends State<profileScreen> {
           gender: gender,
           ownerName: ownerName,
           ownerID: ownerID,
-          type: type);
+          type: type,
+          Image: Image);
       DataBaseUtils.addPetToFireStore(pet);
-      // Navigator.pop(context);
+      petNamecntroller.text = '';
+      ageController.text = '';
+      _photo = null;
+      ImageURL = null;
+      Navigator.pop(context);
     }
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Gallery'),
+                      onTap: () {
+                        imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  // new ListTile(
+                  //   leading: new Icon(Icons.photo_camera),
+                  //   title: new Text('Camera'),
+                  //   onTap: () {
+                  //     imgFromCamera();
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   void showLoading() {
@@ -369,6 +479,4 @@ class _profileScreenState extends State<profileScreen> {
       },
     );
   }
-
-
 }

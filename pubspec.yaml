@@ -41,6 +41,8 @@ dependencies:
   floating_bottom_navigation_bar: ^1.5.2
   image_picker:
   firebase_storage: ^11.0.16
+  fluttertoast: ^8.1.1
+  avatar_glow: ^2.0.2
 
 dev_dependencies:
   flutter_test:

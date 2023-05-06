@@ -1,9 +1,8 @@
-
-
 // import '../../providers/userProvider.dart';
 
 import 'dart:io';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,14 +65,14 @@ class _createAccountScreenState
           .ref()
           .child("UserImages/$fileName");
       await ref.putFile(_photo!);
-       await ref.getDownloadURL().then((value) {
-          ImageURL=value;
-        });
-
+      await ref.getDownloadURL().then((value) {
+        ImageURL = value;
+      });
     } catch (e) {
       print('error occured');
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -83,7 +82,6 @@ class _createAccountScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return ChangeNotifierProvider(
       create: (context) {
         return viewModel;
@@ -98,8 +96,12 @@ class _createAccountScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Text('Welcome',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 30),),
-                  Image(image: AssetImage('assets/images/welcome.png'),width: MediaQuery.of(context).size.width*.8),
-                  SizedBox(height: 10,),
+                  Image(
+                      image: AssetImage('assets/images/welcome.png'),
+                      width: MediaQuery.of(context).size.width * .8),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Form(
@@ -110,21 +112,41 @@ class _createAccountScreenState
                           children: [
                             Center(
                               child: GestureDetector(
-                                onTap: () {
-                                  _showPicker(context);
-                                },
-                                child: _photo != null ? CircleAvatar(
-                                  radius: 60,
-                                  backgroundImage:  FileImage(
-                                        _photo!,
-                                      )):CircleAvatar(
-                                  radius: 60,
-
-                                  backgroundImage: AssetImage('assets/images/appLogo.jpg',),
-                                ),
-                              ),
-                            ), SizedBox(
-                              height: 10,
+                                  onTap: () {
+                                    _showPicker(context);
+                                  },
+                                  child: _photo != null
+                                      ? CircleAvatar(
+                                          radius: 75,
+                                          backgroundImage: FileImage(
+                                            _photo!,
+                                          ))
+                                      : AvatarGlow(
+                                          endRadius: 100,
+                                          glowColor: Colors.purpleAccent,
+                                          duration:
+                                              Duration(milliseconds: 2000),
+                                          repeat: true,
+                                          showTwoGlows: true,
+                                          repeatPauseDuration:
+                                              Duration(milliseconds: 100),
+                                          child: Material(
+                                            // Replace this child with your own
+                                            elevation: 0,
+                                            shape: CircleBorder(),
+                                            child: CircleAvatar(
+                                              radius: 75,
+                                              backgroundColor:
+                                                  Colors.grey.shade300,
+                                              backgroundImage: AssetImage(
+                                                'assets/images/AddImage.png',
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                            ),
+                            SizedBox(
+                              height: 5,
                             ),
                             TextFormField(
                               controller: fNameController,
@@ -134,11 +156,13 @@ class _createAccountScreenState
                                   border: OutlineInputBorder(
                                     gapPadding: 3,
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -158,11 +182,13 @@ class _createAccountScreenState
                                   hintText: "Phone Number",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -182,15 +208,17 @@ class _createAccountScreenState
                                   hintText: "E-mail",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 final bool emailValid = RegExp(
-                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                     .hasMatch(value!);
                                 if (value == null ||
                                     value!.isEmpty ||
@@ -211,11 +239,13 @@ class _createAccountScreenState
                                   border: OutlineInputBorder(
                                     gapPadding: 3,
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -236,11 +266,13 @@ class _createAccountScreenState
                                   hintText: "password",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
@@ -260,17 +292,18 @@ class _createAccountScreenState
                                   hintText: "Confirm Password",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: MyColors.primaryColor),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
                                   return "Please Enter Password Again";
-                                }
-                                else if(value!=passController.text){
+                                } else if (value != passController.text) {
                                   return "Please Enter matched password";
                                 }
                                 return null;
@@ -280,9 +313,9 @@ class _createAccountScreenState
                               height: 20,
                             ),
                             ElevatedButton(
-                              style:ElevatedButton.styleFrom(
-                                minimumSize: Size.fromHeight(50),
-                                primary: MyColors.primaryColor),
+                                style: ElevatedButton.styleFrom(
+                                    minimumSize: Size.fromHeight(50),
+                                    primary: MyColors.primaryColor),
                                 onPressed: () {
                                   createAccount();
                                 },
@@ -315,8 +348,14 @@ class _createAccountScreenState
 
   void createAccount() async {
     if (FormKey.currentState!.validate()) {
-      viewModel.createAccount(fNameController.text, phoneController.text, emailController.text,
-          passController.text,confirmPassController.text,addressController.text,ImageURL);
+      viewModel.createAccount(
+          fNameController.text,
+          phoneController.text,
+          emailController.text,
+          passController.text,
+          confirmPassController.text,
+          addressController.text,
+          ImageURL);
     }
   }
 
@@ -361,7 +400,4 @@ class _createAccountScreenState
     provider.user = user;
     Navigator.pushReplacementNamed(context, homeScreen.routeName);
   }
-
-
 }
-
