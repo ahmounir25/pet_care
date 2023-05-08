@@ -11,6 +11,8 @@ import 'package:pet_care/modules/petInfo/petInfoScreen.dart';
 import 'package:pet_care/providers/userProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'modules/QrCode/QrScanning.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
         homeScreen.routeName:(context) => homeScreen(),
         profileScreen.routeName:(context) => profileScreen(),
         petInfoScreen.routeName:(context) => petInfoScreen(),
+        QrScanning.routeName:(context)=>QrScanning(),
       },
     );
   }

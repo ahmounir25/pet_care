@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,8 +17,9 @@ import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
-
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../providers/userProvider.dart';
+
 
 class profileScreen extends StatefulWidget {
   static const String routeName = 'profile';
@@ -34,7 +37,6 @@ class _profileScreenState extends State<profileScreen> {
 
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
-
   File? _photo;
   final ImagePicker _picker = ImagePicker();
 
@@ -68,6 +70,8 @@ class _profileScreenState extends State<profileScreen> {
       print('error occured');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -387,10 +391,10 @@ class _profileScreenState extends State<profileScreen> {
                                           : null,
                                       provider.user!.Name,
                                       provider.user!.id,
+                                      provider.user!.phone,
                                       selectedValue,
                                       selectedGender,
                                       ImageURL);
-
                                   // Navigator.pop(context);
                                 },
                                 child: Text('Add pet')),
@@ -408,7 +412,7 @@ class _profileScreenState extends State<profileScreen> {
     );
   }
 
-  void addPet(String name, int? age, String ownerName, String ownerID,
+  void addPet(String name, int? age, String ownerName, String ownerID,String OwnerPhone,
       String type, String gender, String? Image) {
     if (FormKey.currentState!.validate() && Image != null) {
       // showLoading();
@@ -418,6 +422,7 @@ class _profileScreenState extends State<profileScreen> {
           gender: gender,
           ownerName: ownerName,
           ownerID: ownerID,
+          ownerPhone: OwnerPhone,
           type: type,
           Image: Image);
       DataBaseUtils.addPetToFireStore(pet);
@@ -426,6 +431,7 @@ class _profileScreenState extends State<profileScreen> {
       _photo = null;
       ImageURL = null;
       Navigator.pop(context);
+
     }
   }
 

@@ -10,8 +10,10 @@ class Pet {
   String gender;
   String ownerName;
   String ownerID;
+  String ownerPhone;
   String type;
   String? Image;
+  String? qr;
 
   Pet(
       {required this.Name,
@@ -19,8 +21,10 @@ class Pet {
       required this.gender,
       required this.ownerName,
       required this.ownerID,
+        required this.ownerPhone,
       required this.type,
-      this.Image = null}); // without pass cause i will n't save  or generate it
+      this.Image = null,
+      this.qr}); // without pass cause i will n't save  or generate it
 
   Pet.fromJson(Map<String, dynamic> map)
       : this(
@@ -29,8 +33,10 @@ class Pet {
             gender: map['gender'],
             ownerName: map["ownerName"],
             ownerID: map["ownerID"],
+            ownerPhone: map["ownerPhone"],
             type: map["type"],
-            Image: map["Image"]);
+            Image: map["Image"],
+            qr: map["qr"]);
 
   Map<String, dynamic> toJson() {
     return {
@@ -40,8 +46,10 @@ class Pet {
       "gender": gender,
       "ownerName": ownerName,
       "ownerID": ownerID,
+      "ownerPhone":ownerPhone,
       "type": type,
-      "Image":Image
+      "Image": Image,
+      "qr":qr
     };
   }
 }

@@ -1,10 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:pet_care/modules/QrCode/QrScanning.dart';
+
 import 'package:pet_care/modules/foundScreen/foundScreen.dart';
 import 'package:pet_care/modules/missingScreen/missingScreen.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
-
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../base.dart';
 import '../../providers/userProvider.dart';
 import '../../shared/colors.dart';
@@ -12,7 +19,6 @@ import '../AdaptionScreen/adaptionScreen.dart';
 import '../Login/loginScreen.dart';
 import 'homeScreen_Navigator.dart';
 import 'homeScreen_VM.dart';
-
 
 class homeScreen extends StatefulWidget {
   const homeScreen({Key? key}) : super(key: key);
@@ -26,6 +32,8 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
     with TickerProviderStateMixin
     implements homeScreenNavigator {
   late TabController _tabController;
+
+
 
   @override
   void initState() {
@@ -136,10 +144,12 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                       primary: MyColors.primaryColor,
                     ),
                     onPressed: () {
-                      //add
+                      Navigator.pushNamed(context, QrScanning.routeName);
                     },
+
+
                     child: Row(
-                        children: [Icon(Icons.qr_code), Text('QR Scanning ')]),
+                        children: [Icon(Icons.qr_code), Text('Scan QR Code')]),
                   ),
                   SizedBox(
                     height: 10,
