@@ -35,53 +35,58 @@ class DataBaseUtils {
     return userRef.data();
   }
 
-static CollectionReference<Pet> getPetsCollection(String userID) {
-  return getUsersCollection().doc(userID)
-      .collection(Pet.collectionName)
-      .withConverter<Pet>(
-    fromFirestore: (snapshot, options) {
-      return Pet.fromJson(snapshot.data()!);
-    },
-    toFirestore: (value, options) => value.toJson(),
-  );
-}
+  static CollectionReference<Pet> getPetsCollection(String userID) {
+    return getUsersCollection()
+        .doc(userID)
+        .collection(Pet.collectionName)
+        .withConverter<Pet>(
+          fromFirestore: (snapshot, options) {
+            return Pet.fromJson(snapshot.data()!);
+          },
+          toFirestore: (value, options) => value.toJson(),
+        );
+  }
 
-static Future<void> addPetToFireStore(Pet pet){
-  var msgRef = getPetsCollection(pet.ownerID).doc();
-  pet.id=msgRef.id;
-  return msgRef.set(pet);
-}
+  static Future<void> addPetToFireStore(Pet pet) {
+    var msgRef = getPetsCollection(pet.ownerID).doc();
+    pet.id = msgRef.id;
+    return msgRef.set(pet);
+  }
 
-static Stream<QuerySnapshot<Pet>>readPetFromFirestore(String ownerID)  {
-  var snapShotMessage =  getPetsCollection(ownerID).snapshots();
-  return snapShotMessage;
-}
+  static Stream<QuerySnapshot<Pet>> readPetFromFirestore(String ownerID) {
+    var snapShotMessage = getPetsCollection(ownerID).snapshots();
+    return snapShotMessage;
+  }
 
-  // static CollectionReference<Pet> getPetsCollection() {
-  //   return FirebaseFirestore.instance
-  //       .collection(Pet.collectionName)
-  //       .withConverter<Pet>(
-  //         fromFirestore: (snapshot, options) {
-  //           return Pet.fromJson(snapshot.data()!);
-  //         },
-  //         toFirestore: (value, options) => value.toJson(),
-  //       );
-  // }
-  //
-  // static Future<void> addPetToFireStore(Pet pet) {
-  //   var docRef = getPetsCollection().doc();
-  //   pet.id = docRef.id;
-  //   return docRef.set(pet);
-  // }
-  //
-  // static Future<List<Pet>> readPetFromFirestore() async {
-  //   var snapShotRoom = await getPetsCollection().get();
-  //   List<Pet> pets = snapShotRoom.docs.map((doc) => doc.data()).toList();
-  //   return pets;
-  // }
-
-
-
+  static DeletePet(Pet pet) {
+    // return FirebaseFirestore.instance.collection('USERS').doc(Uid).collection(
+    //     'PETS').doc(PetId).delete();
+    var petREF = getPetsCollection(pet.ownerID).doc(pet.id);
+    FirebaseFirestore.instance.runTransaction(
+        (transaction) async => await transaction.delete(petREF));
+  }
+// static CollectionReference<Pet> getPetsCollection() {
+//   return FirebaseFirestore.instance
+//       .collection(Pet.collectionName)
+//       .withConverter<Pet>(
+//         fromFirestore: (snapshot, options) {
+//           return Pet.fromJson(snapshot.data()!);
+//         },
+//         toFirestore: (value, options) => value.toJson(),
+//       );
+// }
+//
+// static Future<void> addPetToFireStore(Pet pet) {
+//   var docRef = getPetsCollection().doc();
+//   pet.id = docRef.id;
+//   return docRef.set(pet);
+// }
+//
+// static Future<List<Pet>> readPetFromFirestore() async {
+//   var snapShotRoom = await getPetsCollection().get();
+//   List<Pet> pets = snapShotRoom.docs.map((doc) => doc.data()).toList();
+//   return pets;
+// }
 
 // static Future<List<Room>> getRoomFromFirebase() async {
 //   var snapShotRoom = await getRoomsCollection().get();

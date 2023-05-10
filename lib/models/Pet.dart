@@ -4,7 +4,8 @@ enum MyEnum { Cat, Dog, Turtle, Bird, Monkey, Fish, Other }
 
 class Pet {
   static String collectionName = 'PETS';
-  String id = '';
+  String id;
+
   String Name;
   int? age;
   String gender;
@@ -16,18 +17,20 @@ class Pet {
   String? qr;
 
   Pet(
-      {required this.Name,
+      { this.id='',
+      required this.Name,
       required this.age,
       required this.gender,
       required this.ownerName,
       required this.ownerID,
-        required this.ownerPhone,
+      required this.ownerPhone,
       required this.type,
       this.Image = null,
       this.qr}); // without pass cause i will n't save  or generate it
 
   Pet.fromJson(Map<String, dynamic> map)
       : this(
+            id: map['id'],
             Name: map['Name'],
             age: map["age"],
             gender: map['gender'],
@@ -46,10 +49,10 @@ class Pet {
       "gender": gender,
       "ownerName": ownerName,
       "ownerID": ownerID,
-      "ownerPhone":ownerPhone,
+      "ownerPhone": ownerPhone,
       "type": type,
       "Image": Image,
-      "qr":qr
+      "qr": qr
     };
   }
 }
