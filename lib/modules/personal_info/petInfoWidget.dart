@@ -18,26 +18,21 @@ class petInfoWidget extends StatelessWidget {
         Navigator.pushNamed(context, petInfoScreen.routeName, arguments: pet);
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
         child: Card(
           color: MyColors.secondaryColor,
-          // Define the shape of the card
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          // Define how the card's content should be clipped
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          // Define the child widget of the card
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // Add padding around the row widget
               Padding(
-                padding: const EdgeInsets.all(15),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    // Add an image widget to display an image
                     Container(
                       decoration: ShapeDecoration(
                         shape: RoundedRectangleBorder(
@@ -52,27 +47,20 @@ class petInfoWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    // Add some spacing between the image and the text
-                    Container(width: 5),
-                    // Add an expanded widget to take up the remaining horizontal space
+                    SizedBox(width: 5),
                     Expanded(
                       child: Column(
                         children: [
                           Row(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              // Add some spacing between the top of the card and the title
-                              Container(width: 10),
-                              // Add a title widget
+                              SizedBox(width: 10),
                               Text(
                                 "${pet.Name}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20),
                               ),
-                              // Add some spacing between the title and the subtitle
-                              Container(width: 5),
-                              // Add a subtitle widget
+                              SizedBox(width: 5),
                               pet.gender == 'Male'
                                   ? Icon(Icons.male,
                                       size: 40, color: Colors.grey.shade700)
@@ -99,13 +87,16 @@ class petInfoWidget extends StatelessWidget {
                           Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                            IconButton(
-                              color: Colors.red,
-                                onPressed: () {
-                                  showAlert(context);
-                                },
-                                icon: Icon(Icons.delete,size:30 ,)),
-                          ]),
+                                IconButton(
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      showAlert(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      size: 30,
+                                    )),
+                              ]),
                         ],
                       ),
                     ),
@@ -148,26 +139,31 @@ class petInfoWidget extends StatelessWidget {
       // ),
     );
   }
+
   void showAlert(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Are you sure that you want to Delete this Pet ?',
-                    style: TextStyle(fontSize: 15),
-                  ),SizedBox(height: 5,),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
-                      onPressed: (){
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                'Are you sure that you want to Delete this Pet ?',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+                  onPressed: () {
                     DataBaseUtils.DeletePet(pet);
                     Navigator.pop(context);
-                  }, child: Text('Yes'))
-                ]),
+                  },
+                  child: Text('Yes'))
+            ]),
           ),
         );
       },

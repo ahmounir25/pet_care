@@ -1,15 +1,27 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:ui' as ui;
 import '../../models/Pet.dart';
 
-class petInfoScreen extends StatelessWidget {
+class petInfoScreen extends StatefulWidget {
   static const String routeName = 'PetInfo';
 
   @override
+  State<petInfoScreen> createState() => _petInfoScreenState();
+}
+
+class _petInfoScreenState extends State<petInfoScreen> {
+  @override
   Widget build(BuildContext context) {
     var pet = ModalRoute.of(context)!.settings.arguments as Pet;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.primaryColor,
@@ -77,16 +89,100 @@ class petInfoScreen extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 15),
                 textAlign: TextAlign.center),
-            SizedBox(height: 30,),
-            Center(
-              child: QrImage(
-                data: 'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}',
-                size: 120,
-              ),
-            )
+            SizedBox(
+              height: 30,
+            ),
+            Column(
+              children: [
+                Center(
+                  child: QrImage(
+                    data:
+                        'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}',
+                    size: 120,
+                  ),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: MyColors.primaryColor),
+                    onPressed: () async {
+                      String path = await createQrPicture(
+                          'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
+                      final success = await GallerySaver.saveImage(path);
+                      success!
+                          ? showAlert(
+                              context, 'The image has been saved successfully ')
+                          : showAlert(context, 'fail to Save');
+                    },
+                    child: const Text("capture qr code")),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> writeToFile(ByteData data, String path) async {
+    final buffer = data.buffer;
+    await File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  }
+
+  Future<String> createQrPicture(String qr) async {
+    late String path;
+    final qrValidationResult = QrValidator.validate(
+      data: qr,
+      version: QrVersions.auto,
+      errorCorrectionLevel: QrErrorCorrectLevel.L,
+    );
+    final qrCode = qrValidationResult.qrCode;
+
+    final painter = QrPainter.withQr(
+      qr: qrCode!,
+      color: const Color(0xFF000000),
+      gapless: false,
+    );
+
+    await getTemporaryDirectory().then((value) async {
+      String tempPath = value.path;
+      final ts = DateTime.now().millisecondsSinceEpoch.toString();
+      path = '$tempPath/$ts.png';
+
+      await painter
+          .toImageData(2048, format: ui.ImageByteFormat.png)
+          .then((value) async {
+        await writeToFile(value!, path);
+      });
+    });
+    return path;
+  }
+
+  void showAlert(BuildContext context, String txt) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                txt,
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Ok'))
+            ]),
+          ),
+        );
+      },
     );
   }
 }
