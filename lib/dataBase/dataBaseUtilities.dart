@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_care/models/Pet.dart';
+import 'package:pet_care/models/Posts.dart';
 
 import '../models/myUser.dart';
 
@@ -65,6 +66,36 @@ class DataBaseUtils {
     FirebaseFirestore.instance.runTransaction(
         (transaction) async => await transaction.delete(petREF));
   }
+
+  static CollectionReference<Posts> getPostCollection() {
+    return FirebaseFirestore.instance
+        .collection(Posts.collectionName)
+        .withConverter<Posts>(
+          fromFirestore: (snapshot, options) {
+            return Posts.fromJson(snapshot.data()!);
+          },
+          toFirestore: (value, options) => value.toJson(),
+        );
+  }
+
+  static Future<void> addPostToFireStore(Posts post) {
+    var postRef = getPostCollection().doc();
+    post.id = postRef.id;
+    return postRef.set(post);
+  }
+
+  static Stream<QuerySnapshot<Posts>> readPostsFromFirestore() {
+    var snapShotPost = getPostCollection().orderBy('dateTime').snapshots();
+
+    return snapShotPost;
+  }
+
+  static DeletePost(Posts post) {
+    var petREF = getPostCollection().doc(post.id);
+    FirebaseFirestore.instance.runTransaction(
+        (transaction) async => await transaction.delete(petREF));
+  }
+
 // static CollectionReference<Pet> getPetsCollection() {
 //   return FirebaseFirestore.instance
 //       .collection(Pet.collectionName)

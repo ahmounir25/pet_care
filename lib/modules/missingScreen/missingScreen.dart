@@ -1,20 +1,402 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path/path.dart' as Path;
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pet_care/models/Posts.dart';
+import 'package:pet_care/modules/HomeScreen/postWidget.dart';
+import 'package:pet_care/shared/colors.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:provider/provider.dart';
 
-class missingScreen extends StatelessWidget {
+import '../../dataBase/dataBaseUtilities.dart';
+import '../../providers/userProvider.dart';
+
+class missingScreen extends StatefulWidget {
   static const String routeName = 'missing';
 
   @override
+  State<missingScreen> createState() => _missingScreenState();
+}
+
+class _missingScreenState extends State<missingScreen> {
+  var contentController = TextEditingController();
+  var typeController = TextEditingController();
+  GlobalKey<FormState> FormKey = GlobalKey<FormState>();
+  String? ImageURL;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = Path.basename(_photo!.path);
+    // final destination = '${emailController.text}';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child("PostImages/$fileName");
+      await ref.putFile(_photo!);
+      await ref.getDownloadURL().then((value) {
+        ImageURL = value;
+      });
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // var provider = Provider.of<UserProvider>(context);
     return SingleChildScrollView(
       child: Column(
-       crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(
-            image: AssetImage('assets/images/Missing.png'),
-            fit:BoxFit.fitWidth,
+          Stack(children: [
+            Image(
+              image: AssetImage('assets/images/Missing.png'),
+              fit: BoxFit.fitWidth,
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  buttomSheetAct();
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(12),
+                    primary: MyColors.primaryColor),
+              ),
+            )
+          ]),
+          Flexible(
+            fit: FlexFit.loose,
+            child: StreamBuilder<QuerySnapshot<Posts>>(
+              stream: DataBaseUtils.readPostsFromFirestore(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: MyColors.primaryColor,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Some Thing went Wrong ...');
+                }
+                var post = snapshot.data?.docs.map((e) => e.data()).toList();
+                var toRemove = [];
+
+                post?.forEach((element) {
+                  if (element.type != "Missing") {
+                    toRemove.add(element);
+                  }
+                });
+                post?.removeWhere((e) => toRemove.contains(e));
+
+                return ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    // print(pet?.length);
+
+                    return postWiget(post![index]);
+                  },
+                  itemCount: post?.length ?? 0,
+                );
+              },
+            ),
           ),
         ],
       ),
     );
+  }
+
+  List<String> Type = ["Missing", "Found", "Adaption"];
+  var selectedValue = 'Missing';
+  var selectedPet = 'Cat';
+  List<String> items = [
+    'Cat',
+    'Dog',
+    'Turtle',
+    'Bird',
+    'Monkey',
+    'Fish',
+    'Other'
+  ];
+
+  void buttomSheetAct() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        var provider = Provider.of<UserProvider>(context);
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                // height: MediaQuery.of(context).size.height * .9,
+                child: Container(
+                  padding: EdgeInsets.only(top: 10, right: 20, left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Form(
+                        key: FormKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {});
+                                    _showPicker(context);
+                                  },
+                                  child: _photo != null
+                                      ? Material(
+                                          // Replace this child with your own
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(),
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            child: Image.file(_photo!),
+                                          ))
+                                      : Material(
+                                          // Replace this child with your own
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(),
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            child: Image.asset(
+                                              'assets/images/AddImage.png',
+                                            ),
+                                          ),
+                                        )),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text('You Should Add Pet\'s Image',
+                                style: TextStyle(
+                                  color: MyColors.primaryColor,
+                                  decoration: TextDecoration.underline,
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              textInputAction: TextInputAction.next,
+                              maxLines: 8,
+                              controller: contentController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 20),
+                                  hintText: "Write your Post ... ",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: MyColors.primaryColor),
+                                  )),
+                              validator: (value) {
+                                if (value == null || value!.isEmpty) {
+                                  return "Please Write your Post ";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextField(
+                              controller: typeController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                suffixIcon: DropdownButtonFormField(
+                                  value: selectedPet,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedPet = newValue!;
+                                    });
+                                  },
+                                  items: items.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextField(
+                              controller: typeController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                suffixIcon: DropdownButtonFormField(
+                                  value: selectedValue,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedValue = newValue!;
+                                    });
+                                  },
+                                  items: Type.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: MyColors.primaryColor,
+                                ),
+                                onPressed: () {
+                                  addPost(
+                                      provider.user!.Name,
+                                      provider.user!.id,
+                                      provider.user!.Image,
+                                      provider.user!.phone,
+                                      provider.user!.address,
+                                      selectedPet,
+                                      contentController.text,
+                                      selectedValue,
+                                      DateTime.now().millisecondsSinceEpoch,
+                                      ImageURL);
+                                },
+                                child: Text('Add Post')),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Gallery'),
+                      onTap: () {
+                        imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  // new ListTile(
+                  //   leading: new Icon(Icons.photo_camera),
+                  //   title: new Text('Camera'),
+                  //   onTap: () {
+                  //     imgFromCamera();
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void addPost(
+      String Pubname,
+      String pubID,
+      String? pubImage,
+      String phone,
+      String address,
+      String pet,
+      String content,
+      String type,
+      int dateTime,
+      String? Image) {
+    if (FormKey.currentState!.validate() && Image != null) {
+      // showLoading();
+      Posts post = Posts(
+          publisherName: Pubname,
+          publisherId: pubID,
+          pubImage: pubImage,
+          phone: phone,
+          address: address,
+          pet: pet,
+          Content: content,
+          type: type,
+          dateTime: dateTime,
+          Image: Image);
+      DataBaseUtils.addPostToFireStore(post);
+      contentController.text = '';
+      _photo = null;
+      ImageURL = null;
+      Navigator.pop(context);
+    }
   }
 }

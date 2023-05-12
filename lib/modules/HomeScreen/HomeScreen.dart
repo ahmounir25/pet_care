@@ -33,8 +33,6 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
     implements homeScreenNavigator {
   late TabController _tabController;
 
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -87,9 +85,8 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
           centerTitle: true,
           actions: [
             IconButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              onPressed: () {
+                showAlert(context);
               },
               icon: Icon(Icons.logout, color: MyColors.primaryColor),
             ),
@@ -146,8 +143,6 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                     onPressed: () {
                       Navigator.pushNamed(context, QrScanning.routeName);
                     },
-
-
                     child: Row(
                         children: [Icon(Icons.qr_code), Text('Scan QR Code')]),
                   ),
@@ -172,5 +167,48 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
     } else {
       Navigator.pushNamed(context, profileScreen.routeName);
     }
+  }
+
+  void showAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                'Are you sure that you want to Log out ?',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: MyColors.primaryColor),
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacementNamed(
+                          context, LoginScreen.routeName);
+                    },
+                    child: Text('Yes')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: MyColors.primaryColor),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('No')),
+              ])
+            ]),
+          ),
+        );
+      },
+    );
   }
 }

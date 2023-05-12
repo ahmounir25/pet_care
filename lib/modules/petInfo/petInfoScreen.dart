@@ -90,32 +90,26 @@ class _petInfoScreenState extends State<petInfoScreen> {
                 style: TextStyle(fontSize: 15),
                 textAlign: TextAlign.center),
             SizedBox(
-              height: 30,
+              height: 20,
             ),
-            Column(
-              children: [
-                Center(
-                  child: QrImage(
-                    data:
-                        'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}',
-                    size: 120,
-                  ),
-                ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: MyColors.primaryColor),
-                    onPressed: () async {
-                      String path = await createQrPicture(
-                          'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
-                      final success = await GallerySaver.saveImage(path);
-                      success!
-                          ? showAlert(
-                              context, 'The image has been saved successfully ')
-                          : showAlert(context, 'fail to Save');
-                    },
-                    child: const Text("capture qr code")),
-              ],
+            QrImage(
+              data:
+                  'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}',
+              size: 120,
             ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: MyColors.primaryColor),
+                onPressed: () async {
+                  String path = await createQrPicture(
+                      'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
+                  final success = await GallerySaver.saveImage(path);
+                  success!
+                      ? showAlert(
+                          context, 'The image has been saved successfully ')
+                      : showAlert(context, 'fail to Save');
+                },
+                child: Icon(Icons.download,size: 30,)),
           ],
         ),
       ),

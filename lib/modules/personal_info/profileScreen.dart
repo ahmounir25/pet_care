@@ -12,11 +12,13 @@ import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/myUser.dart';
 import 'package:pet_care/modules/personal_info/petInfoWidget.dart';
+import 'package:pet_care/modules/personal_info/postUserWidget.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../models/Posts.dart';
 import '../../providers/userProvider.dart';
 
 
@@ -70,8 +72,6 @@ class _profileScreenState extends State<profileScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<UserProvider>(context);
@@ -83,75 +83,123 @@ class _profileScreenState extends State<profileScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          provider.user?.Image != null
-              ? CircleAvatar(
-                  radius: 100,
-                  backgroundImage: NetworkImage(provider.user?.Image ?? ""))
-              : CircleAvatar(
-                  backgroundColor: Colors.grey.shade300,
-                  radius: 100,
-                  backgroundImage: AssetImage(
-                    "assets/images/defaultUser.png",
-                    // fit: BoxFit.cover,
-                  ),
-                ),
-          SizedBox(
-            height: 10,
-          ),
-          Text("${provider.user?.Name ?? "Unknowm"}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center),
-          SizedBox(
-            height: 10,
-          ),
-          Text("Email : ${provider.user?.email ?? "Unknowm"} ",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15),
-              textAlign: TextAlign.center),
-          SizedBox(
-            height: 10,
-          ),
-          Text("Address : ${provider.user?.address ?? "Unknowm"}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15),
-              textAlign: TextAlign.center),
-          SizedBox(
-            height: 20,
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot<Pet>>(
-              stream: DataBaseUtils.readPetFromFirestore(provider.user!.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            provider.user?.Image != null
+                ? CircleAvatar(
+                    radius: 100,
+                    backgroundImage: NetworkImage(provider.user?.Image ?? ""))
+                : CircleAvatar(
+                    backgroundColor: Colors.grey.shade300,
+                    radius: 100,
+                    backgroundImage: AssetImage(
+                      "assets/images/defaultUser.png",
+                      // fit: BoxFit.cover,
                     ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...');
-                }
-                var pet = snapshot.data?.docs.map((e) => e.data()).toList();
-                return ListView.builder(
-                  itemBuilder: (context, index) {
-                    // print(pet?.length);
-                    return petInfoWidget(pet![index]);
-                  },
-                  itemCount: pet?.length ?? 0,
-                );
-              },
+                  ),
+            SizedBox(
+              height: 10,
             ),
-          ),
+            Text("${provider.user?.Name ?? "Unknowm"}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Email : ${provider.user?.email ?? "Unknowm"} ",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.center),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Address : ${provider.user?.address ?? "Unknowm"}",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.center),
+            SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              fit: FlexFit.loose,
+              child: StreamBuilder<QuerySnapshot<Pet>>(
+                stream: DataBaseUtils.readPetFromFirestore(provider.user!.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Some Thing went Wrong ...');
+                  }
+                  var pet = snapshot.data?.docs.map((e) => e.data()).toList();
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      // print(pet?.length);
+                      return petInfoWidget(pet![index]);
+                    },
+                    itemCount: pet?.length ?? 0,
+                  );
+                },
+              ),
+            ),
+            Text('My Posts',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18)),
+            Flexible(
+              fit: FlexFit.loose,
+              child: StreamBuilder<QuerySnapshot<Posts>>(
+                stream: DataBaseUtils.readPostsFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Some Thing went Wrong ...');
+                  }
+                  var post = snapshot.data?.docs.map((e) => e.data()).toList();
+                  var toRemove = [];
 
-          //add code
-        ],
+                  post?.forEach((element) {
+                    if(element.publisherId!=provider.user!.id){
+                    toRemove.add(element);
+                  }});
+                  post?.removeWhere( (e) => toRemove.contains(e));
+
+                  // var missingPosts;
+                  // for(int i=0;i<post!.length;i++){
+                  //   if(post[i].type=="Missing"){
+                  //   missingPosts?.add(post[i]);
+                  // }}
+                  return ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      // print(pet?.length);
+
+                      return userPostsWidget(post![index]);
+                    },
+                    itemCount: post?.length ?? 0,
+                  );
+                },
+              ),
+            ),
+
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -108,35 +108,7 @@ class petInfoWidget extends StatelessWidget {
         ),
       ),
 
-      // Card(
-      //   color: MyColors.primaryColor,
-      //   child: Column(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: <Widget>[
-      //       ListTile(
-      //         // leading: Icon(Icons.do, size: 45),
-      //         title: Text("Name : ${pet.Name}"),
-      //         subtitle: Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 Text('Type : ${pet.type}'),
-      //                 SizedBox(
-      //                   width: 10,
-      //                 ),
-      //                 Text('Age : ${pet.age} month(s)'),
-      //               ],
-      //             ),
-      //             SizedBox(
-      //               height: 5,
-      //             ),
-      //             Text('Gender : ${pet.gender} '),
-      //           ],
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
+
     );
   }
 
@@ -155,14 +127,26 @@ class petInfoWidget extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
-                  onPressed: () {
-                    DataBaseUtils.DeletePet(pet);
-                    Navigator.pop(context);
-                  },
-                  child: Text('Yes'))
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: MyColors.primaryColor),
+                    onPressed: () {
+                      DataBaseUtils.DeletePet(pet);
+                      Navigator.pop(context);
+                    },
+                    child: Text('Yes')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: MyColors.primaryColor),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('No')),
+              ])
             ]),
           ),
         );
