@@ -11,6 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/myUser.dart';
+import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
+import 'package:pet_care/modules/foundScreen/foundScreen.dart';
 import 'package:pet_care/modules/personal_info/petInfoWidget.dart';
 import 'package:pet_care/modules/personal_info/postUserWidget.dart';
 import 'package:pet_care/shared/colors.dart';
@@ -77,9 +79,9 @@ class _profileScreenState extends State<profileScreen> {
     var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(
-          color: MyColors.primaryColor,
-        ),
+        leading: IconButton(onPressed: (){
+          Navigator.pushReplacementNamed(context, homeScreen.routeName);
+        }, icon: Icon(Icons.keyboard_backspace,color: MyColors.primaryColor,)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -295,7 +297,7 @@ class _profileScreenState extends State<profileScreen> {
                             ),
                             Text('You Should Add Pet\'s Image',
                                 style: TextStyle(
-                                  color: MyColors.primaryColor,
+                                  fontFamily: 'DMSans',
                                   decoration: TextDecoration.underline,
                                 )),
                             SizedBox(
@@ -351,7 +353,7 @@ class _profileScreenState extends State<profileScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value),
+                                      child: Text(" $value ",style: TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),
@@ -383,7 +385,7 @@ class _profileScreenState extends State<profileScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value),
+                                      child: Text(' $value ',style: TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),

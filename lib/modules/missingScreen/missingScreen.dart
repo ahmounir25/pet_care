@@ -205,7 +205,7 @@ class _missingScreenState extends State<missingScreen> {
                             ),
                             Text('You Should Add Pet\'s Image',
                                 style: TextStyle(
-                                  color: MyColors.primaryColor,
+                                    fontFamily: 'DMSans',
                                   decoration: TextDecoration.underline,
                                 )),
                             SizedBox(
@@ -219,7 +219,7 @@ class _missingScreenState extends State<missingScreen> {
                               decoration: InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(vertical: 20),
-                                  hintText: "Write your Post ... ",
+                                  hintText: " Write your Post ... ",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: BorderSide(
@@ -264,7 +264,7 @@ class _missingScreenState extends State<missingScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value),
+                                      child: Text(' $value ',style: TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),
@@ -297,7 +297,7 @@ class _missingScreenState extends State<missingScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value),
+                                      child: Text(' $value ',style: TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),

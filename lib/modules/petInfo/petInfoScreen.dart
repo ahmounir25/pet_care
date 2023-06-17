@@ -3,11 +3,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:pet_care/modules/personal_info/profileScreen.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
+import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/Pet.dart';
 
 class petInfoScreen extends StatefulWidget {
@@ -52,18 +54,34 @@ class _petInfoScreenState extends State<petInfoScreen> {
             SizedBox(
               height: 10,
             ),
-            Text("${pet.Name ?? "Unknowm"}",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(  pet.Name.length<8?
+                "${pet.Name}":"${pet.Name.substring(0,8)}...",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 20, fontFamily: 'DMSans'),
+                    textAlign: TextAlign.center),
+                IconButton(
+                    color: Colors.red,
+                    onPressed: () {
+                      showAlert(context,
+                          'Are you sure that you want to Delete this Pet ?',1,pet);
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      size: 30,
+                    )),
+              ],
+            ),
             SizedBox(
               height: 10,
             ),
             Text("Type : ${pet.type ?? "Unknowm"} ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
             SizedBox(
               height: 10,
@@ -71,7 +89,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
             Text("Gender : ${pet.gender ?? "Unknowm"}",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
             SizedBox(
               height: 10,
@@ -79,7 +97,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
             Text("Age : ${pet.age ?? "Unknowm"} month(s)",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
             SizedBox(
               height: 10,
@@ -87,7 +105,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
             Text("Owner : ${pet.ownerName ?? "Unknowm"} ",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
             SizedBox(
               height: 20,
@@ -98,18 +116,20 @@ class _petInfoScreenState extends State<petInfoScreen> {
               size: 120,
             ),
             ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: MyColors.primaryColor),
+                style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                 onPressed: () async {
                   String path = await createQrPicture(
                       'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
                   final success = await GallerySaver.saveImage(path);
                   success!
                       ? showAlert(
-                          context, 'The image has been saved successfully ')
-                      : showAlert(context, 'fail to Save');
+                          context, 'The image has been saved successfully ',0,pet)
+                      : showAlert(context, 'fail to Save',0,pet);
                 },
-                child: Icon(Icons.download,size: 30,)),
+                child: Icon(
+                  Icons.download,
+                  size: 30,
+                )),
           ],
         ),
       ),
@@ -151,28 +171,59 @@ class _petInfoScreenState extends State<petInfoScreen> {
     return path;
   }
 
-  void showAlert(BuildContext context, String txt) {
+  void showAlert(BuildContext context, String txt, int x,Pet pet) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Center(
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 txt,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
               ),
               SizedBox(
                 height: 5,
               ),
+              x==0?
               ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Ok'))
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(fontFamily: 'DMSans'),
+                  )):Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      style:
+                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+                      onPressed: () {
+                        DataBaseUtils.DeletePet(pet);
+                        Navigator.pushReplacementNamed(context, profileScreen.routeName);
+                      },
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(fontFamily: 'DMSans'),
+                      )),
+                  SizedBox(width: 10,),
+                  ElevatedButton(
+                      style:
+                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(fontFamily: 'DMSans'),
+                      ))
+                ],
+              )
             ]),
           ),
         );

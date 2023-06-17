@@ -16,7 +16,7 @@ class userPostsWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: Card(
-        color: MyColors.secondaryColor,
+        color: Color(0xfff1f1f1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -39,7 +39,7 @@ class userPostsWidget extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(post.publisherName),
+                  Text(post.publisherName,style: TextStyle(fontFamily: 'DMSans',color: Colors.grey)),
                   SizedBox(
                     width: 20,
                   ),
@@ -62,21 +62,13 @@ class userPostsWidget extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Expanded(
+
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(post.Content,
-                          maxLines: 10, overflow: TextOverflow.ellipsis),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [Icon(Icons.phone), Text(post.phone)],
-                      ),
-                      Row(
-                        children: [Icon(Icons.pin_drop), Text(post.address)],
-                      )
+                          maxLines: 10, overflow: TextOverflow.ellipsis,style: TextStyle(fontFamily: 'DMSans',fontSize: 14)),
                     ],
                   )),
                   SizedBox(
@@ -98,12 +90,23 @@ class userPostsWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
-                    finalDate,
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  )
+                  Row(
+                    children: [
+                      Icon(Icons.phone),
+                      SizedBox(width: 3,),
+                      Text(post.phone,style: TextStyle(fontSize: 12,color: Colors.grey),)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.pin_drop),
+                      SizedBox(width: 3,),
+                      Text(post.address,style: TextStyle(fontSize: 12,color: Colors.grey),)
+                    ],
+                  ),
+                  Flexible(child: Text(finalDate,style: TextStyle(fontSize: 12,color: Colors.grey),))
                 ],
               ),
             )

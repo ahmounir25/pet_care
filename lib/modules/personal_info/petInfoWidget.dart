@@ -20,7 +20,7 @@ class petInfoWidget extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
         child: Card(
-          color: MyColors.secondaryColor,
+          color: Color(0xfff1f1f1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -32,6 +32,7 @@ class petInfoWidget extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Container(
                       decoration: ShapeDecoration(
@@ -49,57 +50,45 @@ class petInfoWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Expanded(
-                      child: Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(width: 10),
-                              Text(
-                                "${pet.Name}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
+                          Flexible(
+                            child: Row(
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(width: 10),
+                                Text(
+                                  pet.Name.length<8?
+                                  "${pet.Name}":"${pet.Name.substring(0,8)}...",
+                                  style: TextStyle(
+                                      fontFamily: 'DMSans', fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
                               SizedBox(width: 5),
                               pet.gender == 'Male'
                                   ? Icon(Icons.male,
-                                      size: 40, color: Colors.grey.shade700)
+                                  size: 40, color: Colors.grey.shade700)
                                   : Icon(Icons.female,
-                                      size: 40, color: Colors.grey.shade700),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          pet.type == "Other"
-                              ? Icon(
-                                  Icons.question_mark,
-                                  size: 30,
-                                )
-                              : Image.asset(
-                                  "assets/images/${pet.type.toLowerCase()}.png",
-                                  height: 50,
-                                  width: 50,
-                                ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      showAlert(context);
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      size: 30,
-                                    )),
-                              ]),
-                        ],
-                      ),
-                    ),
+                                  size: 40, color: Colors.grey.shade700),
+                              pet.type == "Other"
+                                  ? Icon(
+                                Icons.question_mark,
+                                size: 30,
+                              )
+                                  : Image.asset(
+                                "assets/images/${pet.type.toLowerCase()}.png",
+                                height: 50,
+                                width: 50,
+                              ),
+                            ],),
+                        ],),),
                   ],
                 ),
               ),
@@ -107,8 +96,6 @@ class petInfoWidget extends StatelessWidget {
           ),
         ),
       ),
-
-
     );
   }
 
@@ -119,7 +106,7 @@ class petInfoWidget extends StatelessWidget {
         return AlertDialog(
           title: Center(
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 'Are you sure that you want to Delete this Pet ?',
                 style: TextStyle(fontSize: 15),

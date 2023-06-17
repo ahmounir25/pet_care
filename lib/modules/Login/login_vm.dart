@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:gallery_saver/files.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../base.dart';
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/myUser.dart';
 import 'loginNavigator.dart';
 
+
+
 class login_vm extends BaseViewModel<loginNavigator> {
+
   void login(String email, String pass) async {
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
@@ -35,6 +43,20 @@ class login_vm extends BaseViewModel<loginNavigator> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  bool canResendEmail = true;
+  Future resetPassword(String email,BuildContext context) async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text('Password Reset Email has been sent to ' + email)));
+      canResendEmail = false;
+      await Future.delayed(Duration(seconds: 5));
+      canResendEmail = true;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text(e.toString())));
     }
   }
 }

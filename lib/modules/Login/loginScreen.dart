@@ -47,7 +47,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                 children: [
                   Text('Welcome Back',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20),),
                   SizedBox(height: 10,),
-                  Image(image: AssetImage('assets/images/login.png')),
+                  Image(image: AssetImage('assets/images/login.png'),),
                   SizedBox(height: 30,),
                   Form(
                     key: FormKey,
@@ -104,7 +104,20 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                           },
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
+                        ),
+                        InkWell(
+                            onTap: () {
+                              viewModel.resetPassword(emailController.text,context);
+                            },
+                            child: Text(
+                              "Forget Password",
+                              style: TextStyle(
+                                  color: MyColors.primaryColor,
+                                  decoration: TextDecoration.underline),
+                            )),
+                        SizedBox(
+                          height: 10,
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
