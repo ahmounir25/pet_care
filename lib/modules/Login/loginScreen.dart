@@ -45,10 +45,23 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Welcome Back',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20),),
-                  SizedBox(height: 10,),
-                  Image(image: AssetImage('assets/images/login.png'),),
-                  SizedBox(height: 30,),
+                  Text(
+                    'Welcome Back',
+                    style: TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.bold, fontSize: 25),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Image(
+                    image: AssetImage('assets/images/login.png'),
+                    fit: BoxFit.fitWidth,
+                    width: double.infinity,
+                    // height: MediaQuery.of(context).size.height*.42,
+
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Form(
                     key: FormKey,
                     child: Column(
@@ -63,24 +76,28 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               hintText: "E-mail",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColors.primaryColor),
+                                borderSide:
+                                    BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColors.primaryColor),
+                                borderSide:
+                                    BorderSide(color: MyColors.primaryColor),
                               )),
                           validator: (value) {
                             final bool emailValid = RegExp(
                                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                 .hasMatch(value!);
-                            if (value == null || value!.isEmpty || emailValid == false) {
+                            if (value == null ||
+                                value!.isEmpty ||
+                                emailValid == false) {
                               return "Please Enter Email ...";
                             }
                             return null;
                           },
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         TextFormField(
                           controller: passController,
@@ -90,11 +107,13 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               hintText: "password",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColors.primaryColor),
+                                borderSide:
+                                    BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColors.primaryColor),
+                                borderSide:
+                                    BorderSide(color: MyColors.primaryColor),
                               )),
                           validator: (value) {
                             if (value == null || value!.isEmpty) {
@@ -104,32 +123,40 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                           },
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         InkWell(
                             onTap: () {
-                              viewModel.resetPassword(emailController.text,context);
+                              viewModel.resetPassword(
+                                  emailController.text, context);
                             },
                             child: Text(
-                              "Forget Password",
+                              "Forget Password" ,
                               style: TextStyle(
+                                  fontFamily: 'DMSans',
                                   color: MyColors.primaryColor,
                                   decoration: TextDecoration.underline),
                             )),
                         SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: MyColors.primaryColor,
-                            minimumSize: Size.fromHeight(50),
-                          ),
+                            style: ElevatedButton.styleFrom(
+                              primary: MyColors.primaryColor,
+                              minimumSize: Size.fromHeight(50),
+                            ),
                             onPressed: () {
                               ValidateForm();
                             },
-                            child: Text('LogIn')),
+                            child: Text(
+                              'LogIn',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 18
+                              ),
+                            )),
                         SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         InkWell(
                             onTap: () {
@@ -139,6 +166,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                             child: Text(
                               "Don't have an account ?",
                               style: TextStyle(
+                                  fontFamily: 'DMSans',
                                   color: MyColors.primaryColor,
                                   decoration: TextDecoration.underline),
                             )),

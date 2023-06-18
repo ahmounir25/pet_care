@@ -91,16 +91,17 @@ class _createAccountScreenState
           child: SafeArea(
             child: Container(
               // margin: EdgeInsets.symmetric(vertical: 30,),
-              padding: EdgeInsets.symmetric(vertical: 30),
+              // padding: EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Text('Welcome',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 30),),
                   Image(
                       image: AssetImage('assets/images/welcome.png'),
-                      width: MediaQuery.of(context).size.width * .8),
+                      // width: MediaQuery.of(context).size.width * .8
+              ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -319,7 +320,7 @@ class _createAccountScreenState
                                 onPressed: () {
                                   createAccount();
                                 },
-                                child: Text('Register')),
+                                child: Text('Register',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
                             SizedBox(
                               height: 10,
                             ),
@@ -331,6 +332,7 @@ class _createAccountScreenState
                                 child: Text(
                                   "Have an account ?",
                                   style: TextStyle(
+                                    fontFamily: 'DMSans',
                                       color: MyColors.primaryColor,
                                       decoration: TextDecoration.underline),
                                 )),
@@ -369,7 +371,7 @@ class _createAccountScreenState
                 children: <Widget>[
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery'),
+                      title: new Text('Gallery',style: TextStyle(fontFamily: 'DMSans')),
                       onTap: () {
                         imgFromGallery();
                         Navigator.of(context).pop();

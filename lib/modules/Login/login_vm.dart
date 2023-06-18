@@ -34,11 +34,11 @@ class login_vm extends BaseViewModel<loginNavigator> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         navigator?.hideDialog();
-        navigator?.showMessage("No user found for that e mail.");
+        navigator?.showMessage("No user found for that email");
         // print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         navigator?.hideDialog();
-        navigator?.showMessage("Wrong password provided for that user.");
+        navigator?.showMessage("Wrong password provided for that user");
         // print('Wrong password provided for that user.');
       }
     } catch (e) {
@@ -51,12 +51,12 @@ class login_vm extends BaseViewModel<loginNavigator> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: email);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text('Password Reset Email has been sent to ' + email)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text('Password Reset Email has been sent to ' + email,style: TextStyle(fontFamily: 'DMSans'),)));
       canResendEmail = false;
       await Future.delayed(Duration(seconds: 5));
       canResendEmail = true;
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text(e.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: new Text('Please Enter your Email to Change Password ',style:TextStyle(fontFamily: 'DMSans'),)));
     }
   }
 }

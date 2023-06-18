@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_care/shared/colors.dart';
 
 class BaseViewModel<T extends BaseNavigator> extends ChangeNotifier {
   T? navigator;
@@ -38,8 +39,8 @@ abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CircularProgressIndicator(),
-                Text('Loading...',style: TextStyle(fontSize: 12),),
+                CircularProgressIndicator(color: MyColors.primaryColor),
+                Flexible(child: Text('Loading...',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
               ]),
         ),
       );
@@ -53,7 +54,7 @@ abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
         titlePadding:EdgeInsets.symmetric(vertical: 30,horizontal: 30) ,
         title:  Center(
           child: Row(children: [
-            Text('$message',style: TextStyle(fontSize: 9),),
+            Flexible(child: Text('$message',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
           ]),
         ),
       );

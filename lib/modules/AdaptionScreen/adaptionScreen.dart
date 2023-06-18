@@ -13,43 +13,48 @@ class adaptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: StreamBuilder<QuerySnapshot<Posts>>(
-            stream: DataBaseUtils.readPostsFromFirestore(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: MyColors.primaryColor,
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Some Thing went Wrong ...');
-              }
-              var post = snapshot.data?.docs.map((e) => e.data()).toList();
-              var toRemove = [];
-
-              post?.forEach((element) {
-                if (element.type != "Adaption") {
-                  toRemove.add(element);
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: StreamBuilder<QuerySnapshot<Posts>>(
+              stream: DataBaseUtils.readPostsFromFirestore(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: MyColors.primaryColor,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Some Thing went Wrong ...',style: TextStyle(fontFamily: 'DMSans'),);
                 }
-              });
-              post?.removeWhere((e) => toRemove.contains(e));
+                var post = snapshot.data?.docs.map((e) => e.data()).toList();
+                var toRemove = [];
 
-              return ListView.builder(
-                reverse: true,
-                itemBuilder: (context, index) {
-                  // print(pet?.length);
-                  return postWiget(post![index]);
-                },
-                itemCount: post?.length ?? 0,
-              );
-            },
-          ),
-        )
-      ],
+                post?.forEach((element) {
+                  if (element.type != "Adaption") {
+                    toRemove.add(element);
+                  }
+                });
+                post?.removeWhere((e) => toRemove.contains(e));
+
+                return ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    // print(pet?.length);
+                    return postWiget(post![index]);
+                  },
+                  itemCount: post?.length ?? 0,
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
