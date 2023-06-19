@@ -67,6 +67,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                   })
               : IconButton(
                   icon: CircleAvatar(
+                    backgroundColor:Colors.grey.shade300,
                       backgroundImage:
                           AssetImage("assets/images/defaultUser.png"),
                       radius: 20),
