@@ -26,7 +26,12 @@ class _petInfoScreenState extends State<petInfoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: MyColors.primaryColor,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: BackButton(
+          color: MyColors.primaryColor,
+        ),
+
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -94,7 +99,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
             SizedBox(
               height: 10,
             ),
-            Text("Age : ${pet.age ?? "Unknowm"} month(s)",
+            Text("Birth Day : ${pet.age ?? "Unknowm"}",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
@@ -205,7 +210,9 @@ class _petInfoScreenState extends State<petInfoScreen> {
                       ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                       onPressed: () {
                         DataBaseUtils.DeletePet(pet);
-                        Navigator.pushReplacementNamed(context, profileScreen.routeName);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+
                       },
                       child: Text(
                         'Yes',

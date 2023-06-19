@@ -7,7 +7,7 @@ class Pet {
   String id;
 
   String Name;
-  int? age;
+  String? age;
   String gender;
   String ownerName;
   String ownerID;

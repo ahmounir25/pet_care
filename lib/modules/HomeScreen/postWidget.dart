@@ -10,10 +10,10 @@ class postWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var date=DateTime.fromMillisecondsSinceEpoch(post.dateTime);
-    var finalDate=DateFormat('hh:mm a').format(date);
+    var date = DateTime.fromMillisecondsSinceEpoch(post.dateTime);
+    var finalDate = DateFormat('hh:mm a').format(date);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5,vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: Card(
         color: Color(0xfff1f1f1),
         shape: RoundedRectangleBorder(
@@ -24,16 +24,23 @@ class postWiget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
               child: Row(
                 children: [
-                  post.pubImage!=null ?
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(post.pubImage!),
-                  ):Icon(Icons.person,)
-                  ,SizedBox(width: 10,),
-                  Text(post.publisherName,style: TextStyle(fontFamily: 'DMSans',color: Colors.grey)),
+                  post.pubImage != null
+                      ? CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(post.pubImage!),
+                        )
+                      : Icon(
+                          Icons.person,
+                        ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(post.publisherName,
+                      style:
+                          TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
                 ],
               ),
             ),
@@ -42,22 +49,31 @@ class postWiget extends StatelessWidget {
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.,
                 crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline:TextBaseline.alphabetic ,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Expanded(child: Column(
+                  Expanded(
+                      child: Column(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(post.Content,maxLines: 10,overflow:TextOverflow.ellipsis,style: TextStyle(fontFamily: 'DMSans',fontSize: 14)),
+                      Text(post.Content,
+                          maxLines: 10,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontFamily: 'DMSans', fontSize: 14)),
                     ],
                   )),
-                  SizedBox(width: 10,),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: SizedBox.fromSize(
-                      size: Size.fromRadius(48),
-                      child: Image.network(
-                        post.Image!,fit: BoxFit.cover
+                  SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    onTap: () {
+                     imageZoomAct(context);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: SizedBox.fromSize(
+                        size: Size.fromRadius(48),
+                        child: Image.network(post.Image!, fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -75,18 +91,32 @@ class postWiget extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.phone),
-                      SizedBox(width: 3,),
-                      Text(post.phone,style: TextStyle(fontSize: 12,color: Colors.grey),)
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        post.phone,
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      )
                     ],
                   ),
                   Row(
                     children: [
                       Icon(Icons.pin_drop),
-                      SizedBox(width: 3,),
-                      Text(post.address,style: TextStyle(fontSize: 12,color: Colors.grey),)
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        post.address,
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      )
                     ],
                   ),
-                  Flexible(child: Text(finalDate,style: TextStyle(fontSize: 12,color: Colors.grey),))
+                  Flexible(
+                      child: Text(
+                    finalDate,
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ))
                 ],
               ),
             )
@@ -94,5 +124,42 @@ class postWiget extends StatelessWidget {
         ),
       ),
     );
+  }
+  void imageZoomAct(BuildContext context){
+    Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: true,
+        pageBuilder: (BuildContext context, _, __) {
+          return Stack(
+            alignment: AlignmentDirectional.topStart,
+            children: [
+              Container(
+                color: Colors.black.withOpacity(.7),
+              ),
+              Container(
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 30,
+                    )),
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.symmetric(vertical: 15),
+              ),
+              Container(
+                child: Hero(
+                  tag: "zoom",
+                  child: Image.network(post.Image!,
+                      fit: BoxFit.fitWidth),
+                ),
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 8,vertical: 80),
+              ),
+            ],
+          );
+        }));
   }
 }

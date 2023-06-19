@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care/shared/colors.dart';
 
+import 'dataBase/dataBaseUtilities.dart';
+import 'models/Posts.dart';
+
 class BaseViewModel<T extends BaseNavigator> extends ChangeNotifier {
   T? navigator;
 }
@@ -60,5 +63,4 @@ abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
       );
     },);
   }
-
 }

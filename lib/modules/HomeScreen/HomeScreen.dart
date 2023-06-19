@@ -7,10 +7,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:pet_care/modules/QrCode/QrScanning.dart';
+import 'package:pet_care/modules/ServicesScreen/serviceScreen.dart';
 
 import 'package:pet_care/modules/foundScreen/foundScreen.dart';
 import 'package:pet_care/modules/missingScreen/missingScreen.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../base.dart';
 import '../../providers/userProvider.dart';
@@ -43,6 +45,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<UserProvider>(context);
     int navigatorBarCntr = 0;
     List<Widget> screensList = [
       adaptionScreen(),
@@ -54,8 +57,25 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          leading: provider.user?.Image != null
+              ? IconButton(
+                  icon: CircleAvatar(
+                      backgroundImage: NetworkImage(provider.user?.Image ?? ""),
+                      radius: 20),
+                  onPressed: () {
+                    Navigator.pushNamed(context, profileScreen.routeName);
+                  })
+              : IconButton(
+                  icon: CircleAvatar(
+                      backgroundImage:
+                          AssetImage("assets/images/defaultUser.png"),
+                      radius: 20),
+                  onPressed: () {
+                    Navigator.pushNamed(context, profileScreen.routeName);
+                  }),
           title: Text('Pet Care',
               style: TextStyle(
+                  fontFamily: 'DMSans',
                   fontSize: 25,
                   color: MyColors.primaryColor,
                   fontStyle: FontStyle.italic,
@@ -86,7 +106,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
           actions: [
             IconButton(
               onPressed: () {
-                showAlert(context);
+                showAlert();
               },
               icon: Icon(Icons.logout, color: MyColors.primaryColor),
             ),
@@ -103,7 +123,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
         items: [
           FloatingNavbarItem(icon: Icons.home, title: 'Home'),
           FloatingNavbarItem(icon: Icons.search, title: 'Search'),
-          FloatingNavbarItem(icon: Icons.person, title: 'Profile'),
+          FloatingNavbarItem(icon: Icons.medical_services, title: 'Services'),
           // FloatingNavbarItem(icon: Icons.settings, title: 'Setti
         ],
       ),
@@ -118,7 +138,8 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
   void navigationBarAction(int navigatorBarCntr) {
     if (navigatorBarCntr == 0) {
       Navigator.pushReplacementNamed(context, homeScreen.routeName);
-    } else if (navigatorBarCntr == 1) {
+    }
+    else if (navigatorBarCntr == 1) {
       showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -165,11 +186,11 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
         },
       );
     } else {
-      Navigator.pushNamed(context, profileScreen.routeName);
+      Navigator.pushNamed(context, serviceScreen.routeName);
     }
   }
 
-  void showAlert(BuildContext context) {
+  void showAlert() {
     showDialog(
       context: context,
       builder: (context) {

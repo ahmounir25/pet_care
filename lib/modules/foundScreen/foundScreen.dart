@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
+import 'package:pet_care/base.dart';
+import 'package:pet_care/modules/foundScreen/foundScreenNavigator.dart';
+import 'package:pet_care/modules/foundScreen/foundScreen_VM.dart';
 import 'package:provider/provider.dart';
 
 import '../../dataBase/dataBaseUtilities.dart';
@@ -20,7 +23,8 @@ class foundScreen extends StatefulWidget {
   State<foundScreen> createState() => _foundScreenState();
 }
 
-class _foundScreenState extends State<foundScreen> {
+class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
+    implements foundScreenNavigator {
   var contentController = TextEditingController();
 
   var typeController = TextEditingController();
@@ -35,6 +39,12 @@ class _foundScreenState extends State<foundScreen> {
   File? _photo;
 
   final ImagePicker _picker = ImagePicker();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.navigator = this; //important .......................
+  }
 
   Future imgFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -68,69 +78,74 @@ class _foundScreenState extends State<foundScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Stack(
-            children:[ Image(
-              image: AssetImage('assets/images/found.png'),
-              fit: BoxFit.fitWidth,
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height*.42,
-            ),
-              Container(
-                margin: EdgeInsets.all(10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    buttomSheetAct();
-                  },
-                  child: Icon(Icons.edit, color: Colors.white,size: 30,),
-                  style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(12),
-                      primary: MyColors.primaryColor
-                  ),
-                ),
-              )
-            ]
-          ),
-          Flexible(
-            fit: FlexFit.loose,
-            child: StreamBuilder<QuerySnapshot<Posts>>(
-              stream: DataBaseUtils.readPostsFromFirestore(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
+    return ChangeNotifierProvider(
+      create: (context) {
+        return viewModel;
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              children:[ Image(
+                image: AssetImage('assets/images/found.png'),
+                fit: BoxFit.fitWidth,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height*.42,
+              ),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      buttomSheetAct();
+                    },
+                    child: Icon(Icons.edit, color: Colors.white,size: 30,),
+                    style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(12),
+                        primary: MyColors.primaryColor
                     ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...');
-                }
-                var post = snapshot.data?.docs.map((e) => e.data()).toList();
-                var toRemove = [];
-
-                post?.forEach((element) {if(element.type!="Found"){
-                  toRemove.add(element);
-                }});
-                post?.removeWhere( (e) => toRemove.contains(e));
-                return ListView.builder(
-                  reverse: true,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    // print(pet?.length);
-                    return postWiget(post![index]);
-                  },
-                  itemCount: post?.length ?? 0,
-                );
-              },
+                  ),
+                )
+              ]
             ),
-          ),
-        ],
+            Flexible(
+              fit: FlexFit.loose,
+              child: StreamBuilder<QuerySnapshot<Posts>>(
+                stream: DataBaseUtils.readPostsFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Some Thing went Wrong ...');
+                  }
+                  var post = snapshot.data?.docs.map((e) => e.data()).toList();
+                  var toRemove = [];
+
+                  post?.forEach((element) {if(element.type!="Found"){
+                    toRemove.add(element);
+                  }});
+                  post?.removeWhere( (e) => toRemove.contains(e));
+                  return ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      // print(pet?.length);
+                      return postWiget(post![index]);
+                    },
+                    itemCount: post?.length ?? 0,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -174,8 +189,8 @@ class _foundScreenState extends State<foundScreen> {
                             Center(
                               child: GestureDetector(
                                   onTap: () {
-                                    setState(() {});
-                                    _showPicker(context);
+                                    // setState(() {});
+                                    _showPicker();
                                   },
                                   child: _photo != null
                                       ? Material(
@@ -321,9 +336,10 @@ class _foundScreenState extends State<foundScreen> {
                                       contentController.text,
                                       selectedValue,
                                       DateTime.now().millisecondsSinceEpoch,
-                                      ImageURL);
+                                      ImageURL
+                                  );
                                 },
-                                child: Text('Add Post')),
+                                child: Text('Add Post',style: TextStyle(fontFamily: 'DMSans'),)),
                           ],
                         ),
                       ),
@@ -337,7 +353,7 @@ class _foundScreenState extends State<foundScreen> {
       },
     );
   }
-  void _showPicker(context) {
+  void _showPicker() {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -378,24 +394,15 @@ class _foundScreenState extends State<foundScreen> {
       String type,
       int dateTime,
       String? Image) {
-    if (FormKey.currentState!.validate() && Image != null) {
-      // showLoading();
-      Posts post = Posts(
-          publisherName: Pubname,
-          publisherId: pubID,
-          pubImage: pubImage,
-          phone: phone,
-          address: address,
-          pet: pet,
-          Content: content,
-          type: type,
-          dateTime: dateTime,
-          Image: Image);
-      DataBaseUtils.addPostToFireStore(post);
+    viewModel.addPost(Pubname, pubID, pubImage, phone, address, pet, content, type, dateTime, Image, FormKey,context);
       contentController.text = '';
       _photo = null;
       ImageURL = null;
-      Navigator.pop(context);
     }
+
+  @override
+  foundScreen_VM init_VM() {
+    return foundScreen_VM();
   }
-}
+  }
+

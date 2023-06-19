@@ -109,7 +109,7 @@ class petInfoWidget extends StatelessWidget {
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 'Are you sure that you want to Delete this Pet ?',
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontFamily: 'DMSans',fontSize: 15),
               ),
               SizedBox(
                 height: 5,
@@ -122,7 +122,7 @@ class petInfoWidget extends StatelessWidget {
                       DataBaseUtils.DeletePet(pet);
                       Navigator.pop(context);
                     },
-                    child: Text('Yes')),
+                    child: Text('Yes',style: TextStyle(fontFamily: 'DMSans'),)),
                 SizedBox(
                   width: 10,
                 ),
@@ -132,7 +132,7 @@ class petInfoWidget extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('No')),
+                    child: Text('No',style: TextStyle( fontFamily: 'DMSans'),)),
               ])
             ]),
           ),

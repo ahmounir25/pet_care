@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/models/Posts.dart';
 import 'package:pet_care/modules/HomeScreen/postWidget.dart';
+import 'package:pet_care/modules/missingScreen/missingScreenNavigator.dart';
+import 'package:pet_care/modules/missingScreen/missingScreen_VM.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
 
+import '../../base.dart';
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../providers/userProvider.dart';
 
@@ -20,11 +23,19 @@ class missingScreen extends StatefulWidget {
   State<missingScreen> createState() => _missingScreenState();
 }
 
-class _missingScreenState extends State<missingScreen> {
+class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
+    implements missingScreenNavigator {
   var contentController = TextEditingController();
   var typeController = TextEditingController();
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
   String? ImageURL;
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.navigator = this; //important .......................
+  }
+
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   File? _photo;
@@ -137,6 +148,7 @@ class _missingScreenState extends State<missingScreen> {
   List<String> Type = ["Missing", "Found", "Adaption"];
   var selectedValue = 'Missing';
   var selectedPet = 'Cat';
+  bool Successfuly=false;
   List<String> items = [
     'Cat',
     'Dog',
@@ -175,7 +187,7 @@ class _missingScreenState extends State<missingScreen> {
                               child: GestureDetector(
                                   onTap: () {
                                     setState(() {});
-                                    _showPicker(context);
+                                    _showPicker();
                                   },
                                   child: _photo != null
                                       ? Material(
@@ -205,7 +217,7 @@ class _missingScreenState extends State<missingScreen> {
                             ),
                             Text('You Should Add Pet\'s Image',
                                 style: TextStyle(
-                                    fontFamily: 'DMSans',
+                                  fontFamily: 'DMSans',
                                   decoration: TextDecoration.underline,
                                 )),
                             SizedBox(
@@ -264,7 +276,9 @@ class _missingScreenState extends State<missingScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(' $value ',style: TextStyle(fontFamily: 'DMSans')),
+                                      child: Text(' $value ',
+                                          style:
+                                              TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),
@@ -297,7 +311,9 @@ class _missingScreenState extends State<missingScreen> {
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(' $value ',style: TextStyle(fontFamily: 'DMSans')),
+                                      child: Text(' $value ',
+                                          style:
+                                              TextStyle(fontFamily: 'DMSans')),
                                     );
                                   }).toList(),
                                 ),
@@ -322,8 +338,9 @@ class _missingScreenState extends State<missingScreen> {
                                       selectedValue,
                                       DateTime.now().millisecondsSinceEpoch,
                                       ImageURL);
+
                                 },
-                                child: Text('Add Post')),
+                                child: Text('Add Post',style: TextStyle( fontFamily: 'DMSans'),)),
                           ],
                         ),
                       ),
@@ -338,7 +355,7 @@ class _missingScreenState extends State<missingScreen> {
     );
   }
 
-  void _showPicker(context) {
+  void _showPicker() {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -379,24 +396,14 @@ class _missingScreenState extends State<missingScreen> {
       String type,
       int dateTime,
       String? Image) {
-    if (FormKey.currentState!.validate() && Image != null) {
-      // showLoading();
-      Posts post = Posts(
-          publisherName: Pubname,
-          publisherId: pubID,
-          pubImage: pubImage,
-          phone: phone,
-          address: address,
-          pet: pet,
-          Content: content,
-          type: type,
-          dateTime: dateTime,
-          Image: Image);
-      DataBaseUtils.addPostToFireStore(post);
-      contentController.text = '';
-      _photo = null;
-      ImageURL = null;
-      Navigator.pop(context);
-    }
+    viewModel.addPost(Pubname, pubID, pubImage, phone, address, pet, content, type, dateTime, Image, FormKey,context);
+    contentController.text = '';
+    _photo = null;
+    ImageURL = null;
+  }
+
+  @override
+  missingScreen_VM init_VM() {
+    return missingScreen_VM();
   }
 }
