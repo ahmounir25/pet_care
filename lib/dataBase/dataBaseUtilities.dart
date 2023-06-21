@@ -27,6 +27,20 @@ class DataBaseUtils {
     DocumentSnapshot<myUser> userRef = await getUsersCollection().doc(id).get();
     return userRef.data();
   }
+  static Stream<DocumentSnapshot<myUser>> readUserInfoFromFirestore(String id) {
+    var snapShotMessage = getUsersCollection().doc(id).snapshots();
+    return snapShotMessage;
+  }
+
+  static updateUser(myUser user,String name,String phone,String address,String? Image) {
+    FirebaseFirestore.instance.collection('USERS').doc(user.id).update({
+      "Name":name.isEmpty?user.Name:name,
+      "phone":phone.isEmpty?user.phone:phone,
+      "Image":Image,
+      "address":address.isEmpty?user.address:address
+    });
+  }
+
 //Pets
   static CollectionReference<Pet> getPetsCollection(String userID) {
     return getUsersCollection()

@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/models/Posts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../dataBase/dataBaseUtilities.dart';
+import '../../models/myUser.dart';
 import '../../providers/userProvider.dart';
 import '../../shared/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -69,138 +71,155 @@ class _userPostsWidgetState extends State<userPostsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<UserProvider>(context);
     var date = DateTime.fromMillisecondsSinceEpoch(widget.post.dateTime);
     var finalDate = DateFormat('hh:mm a').format(date);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-      child: Card(
-        color: Color(0xfff1f1f1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: Row(
-                children: [
-                  widget.post.pubImage != null
-                      ? CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(widget.post.pubImage!),
-                        )
-                      : Icon(
-                          Icons.person,
-                        ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(widget.post.publisherName,
-                      style:
-                          TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            showSheet();
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                          )),
-                      IconButton(
-                          onPressed: () {
-                            showAlert();
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          )),
-                    ],
-                  )
-                ],
+      child:
+      StreamBuilder<DocumentSnapshot<myUser>>(
+        stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: MyColors.primaryColor,
               ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Some Thing went Wrong ...');
+          }
+          var user = snapshot.data;
+          return Card(
+            color: Color(0xfff1f1f1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Expanded(
-                      child: Column(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  child: Row(
+                    children: [
+                      user!.data()!.Image != null
+                          ? CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(user!.data()!.Image!),
+                            )
+                          : Icon(
+                              Icons.person,
+                            ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(user!.data()!.Name,
+                          style:
+                              TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                showSheet();
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.black,
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                showAlert();
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(widget.post.Content,
-                          maxLines: 10,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontFamily: 'DMSans', fontSize: 14)),
-                    ],
-                  )),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: SizedBox.fromSize(
-                      size: Size.fromRadius(48),
-                      child:
-                          Image.network(widget.post.Image!, fit: BoxFit.cover),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.phone),
+                      Expanded(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(widget.post.Content,
+                              maxLines: 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontFamily: 'DMSans', fontSize: 14)),
+                        ],
+                      )),
                       SizedBox(
-                        width: 3,
+                        width: 2,
                       ),
-                      Text(
-                        widget.post.phone,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: SizedBox.fromSize(
+                          size: Size.fromRadius(48),
+                          child:
+                              Image.network(widget.post.Image!, fit: BoxFit.cover),
+                        ),
+                      ),
                     ],
                   ),
-                  Row(
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Icon(Icons.pin_drop),
-                      SizedBox(
-                        width: 3,
+                      Row(
+                        children: [
+                          Icon(Icons.phone),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            user!.data()!.phone,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          )
+                        ],
                       ),
-                      Text(
-                        widget.post.address,
+                      Row(
+                        children: [
+                          Icon(Icons.pin_drop),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            user!.data()!.address,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          )
+                        ],
+                      ),
+                      Flexible(
+                          child: Text(
+                        finalDate,
                         style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )
+                      ))
                     ],
                   ),
-                  Flexible(
-                      child: Text(
-                    finalDate,
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ))
-                ],
-              ),
-            )
-          ],
-        ),
+                )
+              ],
+            ),
+          );
+        }
       ),
     );
   }

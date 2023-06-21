@@ -90,15 +90,11 @@ class _createAccountScreenState
         body: SingleChildScrollView(
           child: SafeArea(
             child: Container(
-              // margin: EdgeInsets.symmetric(vertical: 30,),
-              // padding: EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Text('Welcome',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 30),),
                   Image(
                       image: AssetImage('assets/images/welcome.png'),
-                      // width: MediaQuery.of(context).size.width * .8
               ),
                   SizedBox(
                     height: 5,

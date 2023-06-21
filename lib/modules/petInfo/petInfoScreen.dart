@@ -1,16 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
 import 'package:pet_care/shared/colors.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/Pet.dart';
+import '../../models/myUser.dart';
+import '../../providers/userProvider.dart';
 
 class petInfoScreen extends StatefulWidget {
   static const String routeName = 'PetInfo';
@@ -23,6 +27,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
   @override
   Widget build(BuildContext context) {
     var pet = ModalRoute.of(context)!.settings.arguments as Pet;
+    var provider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -107,11 +112,26 @@ class _petInfoScreenState extends State<petInfoScreen> {
             SizedBox(
               height: 10,
             ),
-            Text("Owner : ${pet.ownerName ?? "Unknowm"} ",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
-                textAlign: TextAlign.center),
+            StreamBuilder<DocumentSnapshot<myUser>>(
+                stream:DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: MyColors.primaryColor,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Some Thing went Wrong ...');
+                }
+                var user = snapshot.data;
+                return Text("Owner : ${user!.data()!.Name!} ",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                    textAlign: TextAlign.center);
+              }
+            ),
             SizedBox(
               height: 20,
             ),

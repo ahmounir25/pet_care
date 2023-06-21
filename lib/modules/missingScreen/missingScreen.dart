@@ -73,74 +73,77 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
 
   @override
   Widget build(BuildContext context) {
-    // var provider = Provider.of<UserProvider>(context);
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Stack(children: [
-            Image(
-              image: AssetImage('assets/images/Missing.png'),
-              fit: BoxFit.fitWidth,
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: ElevatedButton(
-                onPressed: () {
-                  buttomSheetAct();
-                },
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(12),
-                    primary: MyColors.primaryColor),
+    return ChangeNotifierProvider(
+      create: (context) {
+        return viewModel;
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(children: [
+              Image(
+                image: AssetImage('assets/images/Missing.png'),
+                fit: BoxFit.fitWidth,
               ),
-            )
-          ]),
-          Flexible(
-            fit: FlexFit.loose,
-            child: StreamBuilder<QuerySnapshot<Posts>>(
-              stream: DataBaseUtils.readPostsFromFirestore(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...');
-                }
-                var post = snapshot.data?.docs.map((e) => e.data()).toList();
-                var toRemove = [];
-
-                post?.forEach((element) {
-                  if (element.type != "Missing") {
-                    toRemove.add(element);
-                  }
-                });
-                post?.removeWhere((e) => toRemove.contains(e));
-
-                return ListView.builder(
-                  reverse: true,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    // print(pet?.length);
-
-                    return postWiget(post![index]);
+              Container(
+                margin: EdgeInsets.all(10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    buttomSheetAct();
                   },
-                  itemCount: post?.length ?? 0,
-                );
-              },
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(12),
+                      primary: MyColors.primaryColor),
+                ),
+              )
+            ]),
+            Flexible(
+              fit: FlexFit.loose,
+              child: StreamBuilder<QuerySnapshot<Posts>>(
+                stream: DataBaseUtils.readPostsFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Some Thing went Wrong ...');
+                  }
+                  var post = snapshot.data?.docs.map((e) => e.data()).toList();
+                  var toRemove = [];
+
+                  post?.forEach((element) {
+                    if (element.type != "Missing") {
+                      toRemove.add(element);
+                    }
+                  });
+                  post?.removeWhere((e) => toRemove.contains(e));
+
+                  return ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      // print(pet?.length);
+                      return postWiget(post![index]);
+                    },
+                    itemCount: post?.length ?? 0,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
