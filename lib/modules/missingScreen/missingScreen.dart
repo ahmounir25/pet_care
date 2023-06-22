@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart' as Path;
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/models/Posts.dart';
@@ -11,7 +10,6 @@ import 'package:pet_care/modules/missingScreen/missingScreen_VM.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
-
 import '../../base.dart';
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/myUser.dart';
@@ -48,25 +46,36 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
     setState(() {
       if (pickedFile != null) {
         _photo = File(pickedFile.path);
-        uploadFile();
+        // uploadFile();
       } else {
         print('No image selected.');
       }
     });
   }
 
-  Future uploadFile() async {
+  Future uploadFile(String postType) async {
     if (_photo == null) return;
     final fileName = Path.basename(_photo!.path);
     // final destination = '${emailController.text}';
+
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child("PostImages/$fileName");
-      await ref.putFile(_photo!);
-      await ref.getDownloadURL().then((value) {
-        ImageURL = value;
-      });
+      if(postType=="Found"){
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Found/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });}
+      else{
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      }
     } catch (e) {
       print('error occured');
     }
@@ -335,18 +344,19 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
                                         primary: MyColors.primaryColor,
                                       ),
                                       onPressed: () {
-                                        addPost(
-                                            user!.data()!.Name!,
-                                            provider.user!.id,
-                                            user!.data()!.Image!,
-                                            user!.data()!.phone!,
-                                            user!.data()!.address!,
-                                            selectedPet,
-                                            contentController.text,
-                                            selectedValue,
-                                            DateTime.now().millisecondsSinceEpoch,
-                                            ImageURL
-                                        );
+                                        uploadFile(selectedValue).then((value){
+                                          addPost(
+                                              user!.data()!.Name!,
+                                              provider.user!.id,
+                                              user!.data()!.Image!,
+                                              user!.data()!.phone!,
+                                              user!.data()!.address!,
+                                              selectedPet,
+                                              contentController.text,
+                                              selectedValue,
+                                              DateTime.now().millisecondsSinceEpoch,
+                                              ImageURL
+                                          );});
                                       },
                                       child: Text('Add Post',style: TextStyle(fontFamily: 'DMSans'),));
                                 }

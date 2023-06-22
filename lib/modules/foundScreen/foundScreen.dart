@@ -53,25 +53,35 @@ class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
     setState(() {
       if (pickedFile != null) {
         _photo = File(pickedFile.path);
-        uploadFile();
+        // uploadFile(postType);
       } else {
         print('No image selected.');
       }
     });
   }
 
-  Future uploadFile() async {
+  Future uploadFile(String postType) async {
     if (_photo == null) return;
     final fileName = Path.basename(_photo!.path);
     // final destination = '${emailController.text}';
     try {
+      if(postType=="Found"){
       final ref = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child("PostImages/$fileName");
+          .child("PostImages/Found/$fileName");
       await ref.putFile(_photo!);
       await ref.getDownloadURL().then((value) {
         ImageURL = value;
-      });
+      });}
+      else{
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      }
     } catch (e) {
       print('error occured');
     }
@@ -331,7 +341,7 @@ class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
                                       primary: MyColors.primaryColor,
                                     ),
                                     onPressed: () {
-
+                                      uploadFile(selectedValue).then((value){
                                       addPost(
                                           user!.data()!.Name!,
                                           provider.user!.id,
@@ -343,7 +353,7 @@ class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
                                           selectedValue,
                                           DateTime.now().millisecondsSinceEpoch,
                                           ImageURL
-                                      );
+                                      );});
                                     },
                                     child: Text('Add Post',style: TextStyle(fontFamily: 'DMSans'),));
                               }

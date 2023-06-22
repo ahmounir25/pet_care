@@ -38,9 +38,11 @@ class postWiget extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(post.publisherName,
-                      style:
-                          TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                  Flexible(
+                    child: Text(post.publisherName,
+                        style:
+                            TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                  ),
                 ],
               ),
             ),
@@ -112,6 +114,7 @@ class postWiget extends StatelessWidget {
                       )
                     ],
                   ),
+                  SizedBox(width: 3,),
                   Flexible(
                       child: Text(
                     finalDate,

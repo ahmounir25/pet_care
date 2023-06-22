@@ -1,14 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:pet_care/modules/personal_info/profileScreen.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import '../../dataBase/dataBaseUtilities.dart';

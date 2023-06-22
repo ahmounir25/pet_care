@@ -114,9 +114,11 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(user!.data()!.Name,
-                          style:
-                              TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                      Flexible(
+                        child: Text(user!.data()!.Name,
+                            style:
+                                TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                      ),
                       SizedBox(
                         width: 20,
                       ),
@@ -180,7 +182,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                   height: 5,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -208,11 +210,13 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                           )
                         ],
                       ),
+                      SizedBox(width: 3,),
                       Flexible(
-                          child: Text(
-                        finalDate,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ))
+                        child: Text(
+                          finalDate,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      )
                     ],
                   ),
                 )
@@ -245,6 +249,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                         primary: MyColors.primaryColor),
                     onPressed: () {
                       DataBaseUtils.DeletePost(widget.post);
+                      // DataBaseUtils.DeleteImg(widget.post.Image!);
                       Navigator.pop(context);
                     },
                     child: Text('Yes')),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/Posts.dart';
 import 'package:pet_care/models/Services.dart';
@@ -6,7 +7,6 @@ import 'package:pet_care/models/Services.dart';
 import '../models/myUser.dart';
 
 class DataBaseUtils {
-
 //Users
   static CollectionReference<myUser> getUsersCollection() {
     return FirebaseFirestore.instance
@@ -28,17 +28,18 @@ class DataBaseUtils {
     return userRef.data();
   }
 
-  static  Stream<DocumentSnapshot<myUser>> readUserInfoFromFirestore(String id) {
+  static Stream<DocumentSnapshot<myUser>> readUserInfoFromFirestore(String id) {
     var snapShotMessage = getUsersCollection().doc(id).snapshots();
     return snapShotMessage;
   }
 
-  static updateUser(myUser user,String name,String phone,String address,String? Image) {
+  static updateUser(
+      myUser user, String name, String phone, String address, String? Image) {
     FirebaseFirestore.instance.collection('USERS').doc(user.id).update({
-      "Name":name.isEmpty?user.Name:name,
-      "phone":phone.isEmpty?user.phone:phone,
-      "Image":Image,
-      "address":address.isEmpty?user.address:address
+      "Name": name.isEmpty ? user.Name : name,
+      "phone": phone.isEmpty ? user.phone : phone,
+      "Image": Image,
+      "address": address.isEmpty ? user.address : address
     });
   }
 
@@ -67,10 +68,13 @@ class DataBaseUtils {
   }
 
   static DeletePet(Pet pet) {
+    String img=pet.Image!;
     var petREF = getPetsCollection(pet.ownerID).doc(pet.id);
     FirebaseFirestore.instance.runTransaction(
         (transaction) async => await transaction.delete(petREF));
+    DeleteImg(img);
   }
+
 //Posts
   static CollectionReference<Posts> getPostCollection() {
     return FirebaseFirestore.instance
@@ -95,38 +99,54 @@ class DataBaseUtils {
     return snapShotPost;
   }
 
-  static DeletePost(Posts post) {
+  static DeletePost(Posts post) async {
+    String img = post.Image!;
     var petREF = getPostCollection().doc(post.id);
     FirebaseFirestore.instance.runTransaction(
         (transaction) async => await transaction.delete(petREF));
+    DeleteImg(img);
   }
 
-  static updatePost(Posts post,String content,String type,String? Image,String pet) {
-    FirebaseFirestore.instance.collection('POSTS').doc(post.id).update({
+  static DeleteImg(String img) async {
+    String filePath = img.replaceAll(
+        new RegExp(
+            r'https://firebasestorage.googleapis.com/v0/b/petcare-aa802.appspot.com/o/'), '');
+    filePath = filePath.replaceAll(new RegExp(r'%2F'), '/');
+    filePath = filePath.replaceAll(new RegExp(r'(\?alt).*'), '');
 
-      "Content":content.isEmpty?post.Content:content,
-      "type":type.isEmpty?post.type:type,
-      "Image":Image,
-      "pet":pet
+    var storageReferance = FirebaseStorage.instance.ref();
+    storageReferance
+        .child(filePath)
+        .delete()
+        .then((_) => print('Successfully deleted $filePath storage item'));
+  }
+
+  static updatePost(
+      Posts post, String content, String type, String? Image, String pet) {
+    FirebaseFirestore.instance.collection('POSTS').doc(post.id).update({
+      "Content": content.isEmpty ? post.Content : content,
+      "type": type.isEmpty ? post.type : type,
+      "Image": Image,
+      "pet": pet
     });
   }
+
 //Services
   static CollectionReference<Services> getServicesCollection() {
     return FirebaseFirestore.instance
         .collection(Services.collectionName)
         .withConverter<Services>(
-      fromFirestore: (snapshot, options) {
-        return Services.fromJson(snapshot.data()!);
-      },
-      toFirestore: (value, options) => value.toJson(),
-    );
+          fromFirestore: (snapshot, options) {
+            return Services.fromJson(snapshot.data()!);
+          },
+          toFirestore: (value, options) => value.toJson(),
+        );
   }
 
   static Stream<QuerySnapshot<Services>> readServicesFromFirestore() {
     var snapShotPost = getServicesCollection().snapshots();
     return snapShotPost;
   }
-
 
 // static CollectionReference<Pet> getPetsCollection() {
 //   return FirebaseFirestore.instance

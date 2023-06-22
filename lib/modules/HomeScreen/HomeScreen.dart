@@ -60,31 +60,12 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: StreamBuilder <DocumentSnapshot<myUser>>(
-              stream: DataBaseUtils.readUserInfoFromFirestore(provider.user?.id ?? "${provider.user?.id}").skipWhile((element){
-               if( element.data()!.Image!=null){
-                 return false;
-               }
-               else{
-               return true;}
-              }),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: MyColors.primaryColor,
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Some Thing went Wrong ...');
-              }
-              var user = snapshot.data;
-              return Container(
-                child: user!.data()!.Image != null
+          leading:Container(
+                child:provider.user?.Image != null
                     ? IconButton(
                         icon: CircleAvatar(
                             backgroundImage:
-                                NetworkImage(user!.data()!.Image!),
+                                NetworkImage(provider.user!.Image!),
                             radius: 20),
                         onPressed: () {
                           Navigator.pushNamed(context, profileScreen.routeName);
@@ -98,9 +79,8 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                         onPressed: () {
                           Navigator.pushNamed(context, profileScreen.routeName);
                         }),
-              );
-            }
-          ),
+              ),
+
           title: Text('Pet Care',
               style: TextStyle(
                   fontFamily: 'DMSans',
