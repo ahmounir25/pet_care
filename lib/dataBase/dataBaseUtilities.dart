@@ -27,7 +27,8 @@ class DataBaseUtils {
     DocumentSnapshot<myUser> userRef = await getUsersCollection().doc(id).get();
     return userRef.data();
   }
-  static Stream<DocumentSnapshot<myUser>> readUserInfoFromFirestore(String id) {
+
+  static  Stream<DocumentSnapshot<myUser>> readUserInfoFromFirestore(String id) {
     var snapShotMessage = getUsersCollection().doc(id).snapshots();
     return snapShotMessage;
   }

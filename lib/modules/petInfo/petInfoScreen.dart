@@ -135,10 +135,25 @@ class _petInfoScreenState extends State<petInfoScreen> {
             SizedBox(
               height: 20,
             ),
-            QrImage(
-              data:
-                  'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}',
-              size: 120,
+            StreamBuilder<DocumentSnapshot<myUser>>(
+                stream:DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Some Thing went Wrong ...');
+                  }
+                  var user = snapshot.data;
+                return QrImage(
+                  data:
+                      'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${user!.data()!.phone}',
+                  size: 120,
+                );
+              }
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),

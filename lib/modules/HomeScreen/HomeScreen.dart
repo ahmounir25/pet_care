@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ import 'package:pet_care/modules/personal_info/profileScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../base.dart';
+import '../../dataBase/dataBaseUtilities.dart';
+import '../../models/myUser.dart';
 import '../../providers/userProvider.dart';
 import '../../shared/colors.dart';
 import '../AdaptionScreen/adaptionScreen.dart';
@@ -45,7 +48,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<UserProvider>(context);
+    var provider =  Provider.of<UserProvider>(context);
     int navigatorBarCntr = 0;
     List<Widget> screensList = [
       adaptionScreen(),
@@ -57,23 +60,47 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: provider.user?.Image != null
-              ? IconButton(
-                  icon: CircleAvatar(
-                      backgroundImage: NetworkImage(provider.user?.Image ?? ""),
-                      radius: 20),
-                  onPressed: () {
-                    Navigator.pushNamed(context, profileScreen.routeName);
-                  })
-              : IconButton(
-                  icon: CircleAvatar(
-                    backgroundColor:Colors.grey.shade300,
-                      backgroundImage:
-                          AssetImage("assets/images/defaultUser.png"),
-                      radius: 20),
-                  onPressed: () {
-                    Navigator.pushNamed(context, profileScreen.routeName);
-                  }),
+          leading: StreamBuilder <DocumentSnapshot<myUser>>(
+              stream: DataBaseUtils.readUserInfoFromFirestore(provider.user?.id ?? "${provider.user?.id}").skipWhile((element){
+               if( element.data()!.Image!=null){
+                 return false;
+               }
+               else{
+               return true;}
+              }),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: MyColors.primaryColor,
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Some Thing went Wrong ...');
+              }
+              var user = snapshot.data;
+              return Container(
+                child: user!.data()!.Image != null
+                    ? IconButton(
+                        icon: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(user!.data()!.Image!),
+                            radius: 20),
+                        onPressed: () {
+                          Navigator.pushNamed(context, profileScreen.routeName);
+                        })
+                    : IconButton(
+                        icon: CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            backgroundImage:
+                                AssetImage("assets/images/defaultUser.png"),
+                            radius: 20),
+                        onPressed: () {
+                          Navigator.pushNamed(context, profileScreen.routeName);
+                        }),
+              );
+            }
+          ),
           title: Text('Pet Care',
               style: TextStyle(
                   fontFamily: 'DMSans',
@@ -139,8 +166,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
   void navigationBarAction(int navigatorBarCntr) {
     if (navigatorBarCntr == 0) {
       Navigator.pushReplacementNamed(context, homeScreen.routeName);
-    }
-    else if (navigatorBarCntr == 1) {
+    } else if (navigatorBarCntr == 1) {
       showModalBottomSheet(
         context: context,
         builder: (context) {

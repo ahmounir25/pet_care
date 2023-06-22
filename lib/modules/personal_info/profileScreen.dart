@@ -115,7 +115,7 @@ class _profileScreenState extends State<profileScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             StreamBuilder <DocumentSnapshot<myUser>>(
-              stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+              stream:DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(

@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/Posts.dart';
+import '../../models/myUser.dart';
 import '../../providers/userProvider.dart';
 import '../../shared/colors.dart';
 import '../HomeScreen/postWidget.dart';
@@ -321,25 +322,32 @@ class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
                             SizedBox(
                               height: 5,
                             ),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: MyColors.primaryColor,
-                                ),
-                                onPressed: () {
-                                  addPost(
-                                      provider.user!.Name,
-                                      provider.user!.id,
-                                      provider.user!.Image,
-                                      provider.user!.phone,
-                                      provider.user!.address,
-                                      selectedPet,
-                                      contentController.text,
-                                      selectedValue,
-                                      DateTime.now().millisecondsSinceEpoch,
-                                      ImageURL
-                                  );
-                                },
-                                child: Text('Add Post',style: TextStyle(fontFamily: 'DMSans'),)),
+                            StreamBuilder<DocumentSnapshot<myUser>>(
+                              stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+                              builder: (context, snapshot) {
+                                var user=snapshot.data;
+                                return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: MyColors.primaryColor,
+                                    ),
+                                    onPressed: () {
+
+                                      addPost(
+                                          user!.data()!.Name!,
+                                          provider.user!.id,
+                                          user!.data()!.Image!,
+                                          user!.data()!.phone!,
+                                          user!.data()!.address!,
+                                          selectedPet,
+                                          contentController.text,
+                                          selectedValue,
+                                          DateTime.now().millisecondsSinceEpoch,
+                                          ImageURL
+                                      );
+                                    },
+                                    child: Text('Add Post',style: TextStyle(fontFamily: 'DMSans'),));
+                              }
+                            ),
                           ],
                         ),
                       ),
