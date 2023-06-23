@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:pet_care/models/Posts.dart';
 import 'package:intl/intl.dart';
 import '../../shared/colors.dart';
@@ -29,19 +30,19 @@ class postWiget extends StatelessWidget {
                 children: [
                   post.pubImage != null
                       ? CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(post.pubImage!),
-                        )
+                    radius: 20,
+                    backgroundImage: NetworkImage(post.pubImage!),
+                  )
                       : Icon(
-                          Icons.person,
-                        ),
+                    Icons.person,
+                  ),
                   SizedBox(
                     width: 10,
                   ),
                   Flexible(
                     child: Text(post.publisherName,
                         style:
-                            TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
+                        TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
                   ),
                 ],
               ),
@@ -55,21 +56,22 @@ class postWiget extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(post.Content,
-                          maxLines: 10,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontFamily: 'DMSans', fontSize: 14)),
-                    ],
-                  )),
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(post.Content,
+                              maxLines: 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontFamily: 'DMSans', fontSize: 14)),
+                        ],
+                      )),
                   SizedBox(
                     width: 10,
                   ),
                   InkWell(
                     onTap: () {
-                     imageZoomAct(context);
+                      imageZoomAct(context);
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
@@ -88,47 +90,54 @@ class postWiget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.phone),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        post.phone,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.pin_drop),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        post.address,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )
-                    ],
-                  ),
-                  SizedBox(width: 3,),
-                  Flexible(
-                      child: Text(
-                    finalDate,
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ))
-                ],
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+              Row(
+              children: [
+              Icon(Icons.phone),
+              SizedBox(
+                width: 3,
               ),
+              InkWell(
+                  child: Text(
+                    post.phone,
+                    style: TextStyle(fontSize: 12, color: Colors.grey,decoration: TextDecoration.underline),
+                  ),
+                  onTap:() async {
+            FlutterPhoneDirectCaller.callNumber(post.phone);
+            },
             )
           ],
         ),
+        Row(
+          children: [
+            Icon(Icons.pin_drop),
+            SizedBox(
+              width: 3,
+            ),
+            Text(
+              post.address,
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            )
+          ],
+        ),
+        SizedBox(width: 3,),
+        Flexible(
+            child: Text(
+              finalDate,
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ))
+        ],
       ),
+    )],
+    )
+    ,
+    )
+    ,
     );
   }
-  void imageZoomAct(BuildContext context){
+
+  void imageZoomAct(BuildContext context) {
     Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         barrierDismissible: true,
@@ -159,7 +168,7 @@ class postWiget extends StatelessWidget {
                       fit: BoxFit.fitWidth),
                 ),
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 8,vertical: 80),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
               ),
             ],
           );

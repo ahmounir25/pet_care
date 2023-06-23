@@ -106,7 +106,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                       user!.data()!.Image != null
                           ? CircleAvatar(
                               radius: 20,
-                              backgroundImage: NetworkImage(user!.data()!.Image!),
+                              backgroundImage: NetworkImage(user.data()!.Image!),
                             )
                           : Icon(
                               Icons.person,
@@ -115,7 +115,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                         width: 10,
                       ),
                       Flexible(
-                        child: Text(user!.data()!.Name,
+                        child: Text(user.data()!.Name,
                             style:
                                 TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
                       ),
@@ -193,7 +193,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                             width: 3,
                           ),
                           Text(
-                            user!.data()!.phone,
+                            user.data()!.phone,
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           )
                         ],
@@ -205,7 +205,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                             width: 3,
                           ),
                           Text(
-                            user!.data()!.address,
+                            user.data()!.address,
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           )
                         ],

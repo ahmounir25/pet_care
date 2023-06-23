@@ -50,6 +50,7 @@ dependencies:
   gallery_saver: ^2.3.2
   shared_preferences: ^2.0.5
   http: ^0.13.0
+  flutter_phone_direct_caller: ^2.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -348,9 +348,9 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
                                           addPost(
                                               user!.data()!.Name!,
                                               provider.user!.id,
-                                              user!.data()!.Image!,
-                                              user!.data()!.phone!,
-                                              user!.data()!.address!,
+                                              user.data()!.Image!,
+                                              user.data()!.phone!,
+                                              user.data()!.address!,
                                               selectedPet,
                                               contentController.text,
                                               selectedValue,
