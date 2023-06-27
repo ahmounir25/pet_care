@@ -7,6 +7,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:pet_care/modules/ML_Screen/mlScreen.dart';
 import 'package:pet_care/modules/QrCode/QrScanning.dart';
 import 'package:pet_care/modules/ServicesScreen/serviceScreen.dart';
 
@@ -181,7 +182,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                     style: ElevatedButton.styleFrom(
                         primary: MyColors.primaryColor),
                     onPressed: () {
-                      //add
+                      Navigator.pushNamed(context,mlScreen.routeName);
                     },
                     child: Row(
                         children: [Icon(Icons.image), Text('Image Scanning ')]),

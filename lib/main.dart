@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
 import 'package:pet_care/modules/Login/loginScreen.dart';
+import 'package:pet_care/modules/ML_Screen/mlScreen.dart';
 import 'package:pet_care/modules/ServicesScreen/serviceScreen.dart';
 import 'package:pet_care/modules/createAccount/createAccount.dart';
 import 'package:pet_care/modules/personal_info/edit_Info_Screen.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         QrScanning.routeName:(context)=>QrScanning(),
         serviceScreen.routeName:(context) => serviceScreen(),
         editScreen.routeName:(context) => editScreen(),
+        mlScreen.routeName:(context) => mlScreen(),
       },
     );
   }

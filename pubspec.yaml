@@ -51,6 +51,7 @@ dependencies:
   shared_preferences: ^2.0.5
   http: ^0.13.0
   flutter_phone_direct_caller: ^2.1.1
+#  flutter_tflite: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -82,6 +83,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/Missing.png
+#    - assets/model/efficientnet_model.tflite
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
