@@ -51,6 +51,8 @@ dependencies:
   shared_preferences: ^2.0.5
   http: ^0.13.0
   flutter_phone_direct_caller: ^2.1.1
+  flutter_tflite: ^1.0.1
+
 #  flutter_tflite: ^1.0.1
 dev_dependencies:
   flutter_test:
@@ -83,8 +85,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/Missing.png
-#    - assets/model/efficientnet_model.tflite
-  #   - images/a_dot_ham.jpeg
+    - assets/model/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -108,4 +109,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  # see https://flutter.dev/custom-fonts/#from-pack

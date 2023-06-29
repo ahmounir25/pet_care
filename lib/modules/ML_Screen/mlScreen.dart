@@ -1,12 +1,17 @@
-import 'dart:typed_data';
+
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'package:image/image.dart' as img;
+import 'dart:isolate';
+import 'dart:typed_data';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
 import 'package:pet_care/shared/colors.dart';
+import 'package:image/image.dart' as img;
 
 class mlScreen extends StatefulWidget {
   static const String routeName = 'ML';
@@ -16,9 +21,9 @@ class mlScreen extends StatefulWidget {
 }
 
 class _mlScreenState extends State<mlScreen> {
-
-  bool imageSelect = false;
-  late List _recognitions;
+  bool _isModelLoaded = false;
+  Uint8List? _imageBytes;
+  List<double>? _featureVector;
   String? ImageURL;
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
@@ -26,27 +31,96 @@ class _mlScreenState extends State<mlScreen> {
   File? _photo;
   final ImagePicker _picker = ImagePicker();
 
-  // @override
-  // void initState()
-  // {
-  //   super.initState();
-  //   // loadModel();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    loadModel();
+  }
+
+  Future<void> loadImage() async {
+    // final File imageFile = _photo!;
+    await _photo?.readAsBytes().then((value){
+      setState(() {
+        _imageBytes = value;
+      });
+    });
+    print('//////////////////// load image //////////////////////');
+    print(_imageBytes);
+  }
+
+  Future<void> loadModel() async {
+    await Tflite.loadModel(model: 'assets/model/efficientnet_model.tflite');
+    setState(() {
+      _isModelLoaded = true;
+      print('MOdel Loaded Successfully');
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isModelLoaded && _imageBytes != null) {
+      Future.delayed(Duration(milliseconds: 100), () {
+        convertImageToFeatureVector();
+      });
+    }
+  }
+
+  Future<void> convertImageToFeatureVector() async {
+    if (_isModelLoaded && _imageBytes != null) {
+      try {
+        final img.Image? resizedImage = img.decodeImage(_imageBytes!);
+        final img.Image? resizedAndNormalizedImage =
+        img.copyResize(resizedImage!, width: 224, height: 224);
+        final Uint8List normalizedBytes =
+        resizedAndNormalizedImage!.getBytes(format: img.Format.rgb);
+
+        final ReceivePort receivePort = ReceivePort();
+        await Isolate.spawn(_runInference, [normalizedBytes, receivePort.sendPort]);
+        final Completer<List<dynamic>> completer = Completer<List<dynamic>>();
+        receivePort.listen((dynamic data) {
+          completer.complete(data as List<dynamic>);
+        });
+
+        final List<dynamic> output = await completer.future;
+
+        setState(() {
+          _featureVector = output[0].cast<double>();
+        });
+        print('Feature vector: $_featureVector');
+      } catch (e) {
+        print('Error during inference: $e');
+      }
+    } else {
+      print('Model not loaded or image is null.');
+    }
+  }
+
+  static void _runInference(List<dynamic> args) async {
+    final Uint8List normalizedBytes = args[0] as Uint8List;
+    final SendPort sendPort = args[1] as SendPort;
+    final List<dynamic>? output = await Tflite.runModelOnBinary(
+      binary: normalizedBytes,
+      numResults: 1,
+    );
+    sendPort.send(output);
+  }
 
 
   Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
-        // classifyImage(_photo);
-
-      } else {
-        print('No image selected.');
-      }
+    await _picker.pickImage(source: ImageSource.gallery).then((value){
+      setState(() {
+        if (value != null) {
+          _photo = File(value.path);
+          // print('////////////////photo////////////');
+          // print(_photo);
+          uploadFile();
+        } else {
+          print('No image selected.');
+        }
+      });
     });
+
   }
 
   Future uploadFile() async {
@@ -102,7 +176,6 @@ class _mlScreenState extends State<mlScreen> {
                             color: Colors.grey.shade300,
                             child:
                             Image.asset('assets/images/AddImage.png'))
-
                     ),
                   )),
             ),
@@ -110,8 +183,17 @@ class _mlScreenState extends State<mlScreen> {
           ElevatedButton(
               style:ElevatedButton.styleFrom(primary:  MyColors.primaryColor),
               onPressed: () {
-            //add
+                loadImage().then((value){
+                  didChangeDependencies();
+                });
+                //add
           }, child: Text('Search')),
+          Column(
+            children: [
+              _featureVector?[0].toString()==null?Text('data'): Text(_featureVector![0].toString(),style: TextStyle(color: Colors.red)),
+            ]
+
+          )
         ],
       ),
 
@@ -148,5 +230,11 @@ class _mlScreenState extends State<mlScreen> {
           );
         });
   }
-
+  // Future<Image> convertFileToImage(File picture) async {
+  //   List<int> imageBase64 = picture.readAsBytesSync();
+  //   String imageAsString = base64Encode(imageBase64);
+  //   Uint8List uint8list = base64.decode(imageAsString);
+  //   Image image = Image.memory(uint8list);
+  //   return image;
+  // }
 }

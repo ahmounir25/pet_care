@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'modules/QrCode/QrScanning.dart';
 
 void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(
