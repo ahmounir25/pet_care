@@ -53,16 +53,23 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
     });
   }
 
-  Future uploadFile(String postType) async {
+  Future uploadFile(String postType,String selectedPet) async {
     if (_photo == null) return;
     final fileName = Path.basename(_photo!.path);
     // final destination = '${emailController.text}';
-
     try {
-      if(postType=="Found"){
+      if(postType=="Found"&&(selectedPet=='Cat'||selectedPet=='Dog')){
         final ref = firebase_storage.FirebaseStorage.instance
             .ref()
-            .child("PostImages/Found/$fileName");
+            .child("PostImages/Found/$selectedPet/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });}
+      else if(postType=="Found"&&(selectedPet!='Cat'&& selectedPet!='Dog')){
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Found/Other/$fileName");
         await ref.putFile(_photo!);
         await ref.getDownloadURL().then((value) {
           ImageURL = value;
@@ -344,7 +351,7 @@ class _missingScreenState extends BaseView<missingScreen_VM, missingScreen>
                                         primary: MyColors.primaryColor,
                                       ),
                                       onPressed: () {
-                                        uploadFile(selectedValue).then((value){
+                                        uploadFile(selectedValue,selectedPet).then((value){
                                           addPost(
                                               user!.data()!.Name!,
                                               provider.user!.id,
