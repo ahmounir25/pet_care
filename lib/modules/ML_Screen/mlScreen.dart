@@ -10,7 +10,6 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
 import 'package:pet_care/shared/colors.dart';
 import 'package:http/http.dart' as http;
-
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/Posts.dart';
 import '../HomeScreen/postWidget.dart';
@@ -23,9 +22,6 @@ class mlScreen extends StatefulWidget {
 }
 
 class _mlScreenState extends State<mlScreen> {
-  bool _isModelLoaded = false;
-  Uint8List? _imageBytes;
-  List<double>? _featureVector;
   String? ImageURL;
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
@@ -33,6 +29,17 @@ class _mlScreenState extends State<mlScreen> {
   File? _photo;
   List<String> outputList = [];
   final ImagePicker _picker = ImagePicker();
+
+  var selectedPet = 'Cat';
+  List<String> items = [
+    'Cat',
+    'Dog',
+    'Turtle',
+    'Bird',
+    'Monkey',
+    'Fish',
+    'Other'
+  ];
 
   @override
   void initState() {
@@ -49,7 +56,7 @@ class _mlScreenState extends State<mlScreen> {
       'Accept': 'application/json',
     };
     var response = await http.post(
-        Uri.parse("https://7128-35-227-38-194.ngrok-free.app/predict"),
+        Uri.parse("https://fd1f-34-75-24-151.ngrok-free.app/predict"),
         body: base64,
         headers: requestHeaders);
 
@@ -61,6 +68,9 @@ class _mlScreenState extends State<mlScreen> {
 
       // Convert output to a List<String>
       outputList = List<String>.from(output);
+      outputList.forEach((element) {
+        print(element + '/////////////');
+      });
     });
   }
 
@@ -100,6 +110,8 @@ class _mlScreenState extends State<mlScreen> {
   @override
   Widget build(BuildContext context) {
     int i = 0;
+    var latest = [];
+    var foundPosts=[];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -120,6 +132,8 @@ class _mlScreenState extends State<mlScreen> {
                     },
                     child: _photo != null
                         ? Container(
+                      width: 200,
+                            height: 200,
                             child: Image.file(_photo!),
                           )
                         : AvatarGlow(
@@ -133,19 +147,39 @@ class _mlScreenState extends State<mlScreen> {
                             child: Material(
                                 elevation: 0,
                                 child: Container(
+                                  width: 180,
+                                    height: 180,
                                     color: Colors.grey.shade300,
                                     child: Image.asset(
                                         'assets/images/AddImage.png'))),
                           )),
               ),
             ),
+            DropdownButton(
+                  value: selectedPet,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedPet = newValue!;
+                    });
+                  },
+                  items: items.map<DropdownMenuItem<String>>(
+                          (String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(' $value ',
+                              style:
+                              TextStyle(fontFamily: 'DMSans')),
+                        );
+                      }).toList(),
+                ),
+
             ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                 onPressed: () {
                   //add
                   Predict();
                 },
-                child: Text('Search')),
+                child: Text('Search',style:TextStyle(fontFamily: 'DMSans'))),
             Flexible(
               fit: FlexFit.loose,
               child: StreamBuilder<QuerySnapshot<Posts>>(
@@ -160,15 +194,36 @@ class _mlScreenState extends State<mlScreen> {
                   } else if (snapshot.hasError) {
                     return Text('Some Thing went Wrong ...');
                   }
-                  var post = snapshot.data?.docs.map((e) => e.data()).toList();
-                  var latest = [];
-                  post?.forEach((element) {
-                    if (element.type == "Found" &&
-                        element.Image!.contains(outputList.elementAt(i))) {
-                      latest.add(element);
-                      i++;
+                  var post = snapshot.data!.docs.map((e) => e.data()).toList();
+                  if (outputList.length > 0)
+                  {
+                    List<String> substrings = outputList
+                        .map((word) => word
+                            .split('.')
+                            .sublist(0, word.split('.').length - 1)
+                            .join('.'))
+                        .toList();
+
+                    // substrings.forEach((element) {
+                    //   print(element);
+                    // });
+                    for (int j = 0; j < post.length; j++)
+                    {
+                      if (post[j].type == 'Found'&&post[j].pet==selectedPet)
+                      {
+                        foundPosts.add(post[j]);
+                      }
                     }
-                  });
+                    // print(foundPosts.length);
+                      for (int k = 0; k < substrings.length; k++) {
+                        for(int l=0;l<foundPosts.length;l++){
+                        if (foundPosts[l].Image!.contains(substrings[k])) {
+                          latest.add(foundPosts[l]);
+                        }
+                      }
+                      }
+                    // print(latest.length);
+                  }
                   return ListView.builder(
                     // reverse: true,
                     shrinkWrap: true,
@@ -225,11 +280,4 @@ class _mlScreenState extends State<mlScreen> {
           );
         });
   }
-// Future<Image> convertFileToImage(File picture) async {
-//   List<int> imageBase64 = picture.readAsBytesSync();
-//   String imageAsString = base64Encode(imageBase64);
-//   Uint8List uint8list = base64.decode(imageAsString);
-//   Image image = Image.memory(uint8list);
-//   return image;
-// }
 }
