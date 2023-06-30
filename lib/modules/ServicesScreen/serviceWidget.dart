@@ -11,58 +11,69 @@ serviceWidget(Services service) {
         borderRadius: BorderRadius.circular(10),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Flexible(
-                        child: Row(
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(width: 5),
-                            Flexible(
-                              child: Text(
-                                "${service.Name}",
-                                style: TextStyle(
-                                    fontFamily: 'DMSans', fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(service.type),
-                          Text(service.location),
-                          InkWell(
-                            child: Text(service.phone,
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline)),
-                            onTap: () async {
-                              FlutterPhoneDirectCaller.callNumber(
-                                  service.phone);
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    "${service.Name}",
+                    style: TextStyle(
+                        fontFamily: 'DMSans', fontSize: 15),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline:TextBaseline.alphabetic,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.home,size: 20),
+                      SizedBox(width: 5,),
+                      Text(service.type!),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Icon(Icons.location_on_outlined,size: 20),
+                      SizedBox(width: 5,),
+                      Flexible(child: Text(service.location)),
+                    ],
+                  ),
+                  InkWell(
+                    child: Row(
+                      children: [
+                        Icon(Icons.phone,size: 20),
+                        SizedBox(width: 5,),
+                        Flexible(
+                          child: Text(service.phone,
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline)),
+                        ),
+                      ],
+                    ),
+                    onTap: () async {
+                      FlutterPhoneDirectCaller.callNumber(
+                          service.phone);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

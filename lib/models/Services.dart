@@ -4,7 +4,7 @@ class Services {
   String Name;
   String phone;
   String location;
-  String type;
+  String? type;
 
   Services(
       { this.id = '', required this.Name, required this.phone, required this.location, required this.type});
