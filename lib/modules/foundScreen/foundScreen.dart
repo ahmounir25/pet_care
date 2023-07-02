@@ -353,7 +353,7 @@ class _foundScreenState extends BaseView<foundScreen_VM, foundScreen>
                                       addPost(
                                           user!.data()!.Name!,
                                           provider.user!.id,
-                                          user!.data()!.Image!,
+                                          user.data()!.Image!=null? user.data()!.Image:null,
                                           user!.data()!.phone!,
                                           user!.data()!.address!,
                                           selectedPet,

@@ -40,7 +40,8 @@ serviceWidget(Services service) {
                     children: [
                       Icon(Icons.home,size: 20),
                       SizedBox(width: 5,),
-                      Text(service.type!),
+                      Text(service.type!,style: TextStyle(
+                          fontFamily: 'DMSans'),),
                     ],
                   ),
                   Row(
@@ -49,7 +50,8 @@ serviceWidget(Services service) {
                     children: [
                       Icon(Icons.location_on_outlined,size: 20),
                       SizedBox(width: 5,),
-                      Flexible(child: Text(service.location)),
+                      Flexible(child: Text(service.location,style: TextStyle(
+                          fontFamily: 'DMSans'))),
                     ],
                   ),
                   InkWell(

@@ -94,7 +94,7 @@ class postWiget extends StatelessWidget {
                   children: [
               Row(
               children: [
-              Icon(Icons.phone),
+              Icon(Icons.phone,size: 20,),
               SizedBox(
                 width: 3,
               ),
@@ -111,7 +111,7 @@ class postWiget extends StatelessWidget {
         ),
         Row(
           children: [
-            Icon(Icons.pin_drop),
+            Icon(Icons.pin_drop,size: 20,),
             SizedBox(
               width: 3,
             ),
@@ -125,7 +125,7 @@ class postWiget extends StatelessWidget {
         Flexible(
             child: Text(
               finalDate,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(fontSize: 10, color: Colors.grey),
             ))
         ],
       ),

@@ -147,23 +147,19 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
   void navigationBarAction(int navigatorBarCntr) {
     if (navigatorBarCntr == 0) {
       Navigator.pushReplacementNamed(context, homeScreen.routeName);
-    } else if (navigatorBarCntr == 1) {
+    }
+    else if (navigatorBarCntr == 1) {
       showModalBottomSheet(
         context: context,
         builder: (context) {
           return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20),
-              ),
-              color: Colors.white,
-            ),
+
             height: MediaQuery.of(context).size.height * .2,
-            child: Container(
-              padding: EdgeInsets.only(right: 50, left: 10),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -172,8 +168,12 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                     onPressed: () {
                       Navigator.pushNamed(context, QrScanning.routeName);
                     },
-                    child: Row(
-                        children: [Icon(Icons.qr_code), Text('Scan QR Code')]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                          children: [Icon(Icons.qr_code), SizedBox(width: 5,),Text('Scan QR Code',style: TextStyle(fontFamily: 'DMSans',),)]),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
@@ -184,8 +184,12 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                     onPressed: () {
                       Navigator.pushNamed(context,mlScreen.routeName);
                     },
-                    child: Row(
-                        children: [Icon(Icons.image), Text('Image Scanning ')]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                          children: [Icon(Icons.image),SizedBox(width: 5,) ,Text('Search by Image',style: TextStyle(fontFamily: 'DMSans',))]),
+                    ),
                   ),
                 ],
               ),

@@ -8,7 +8,8 @@ class BaseViewModel<T extends BaseNavigator> extends ChangeNotifier {
   T? navigator;
 }
 
-abstract class BaseNavigator {
+abstract class BaseNavigator
+{
   //connector
   void showLoading();
 
@@ -18,7 +19,8 @@ abstract class BaseNavigator {
 }
 
 abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
-    extends State<T2> implements BaseNavigator {
+    extends State<T2> implements BaseNavigator
+{
   late T viewModel;
   T init_VM();
   @override
@@ -43,7 +45,7 @@ abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 CircularProgressIndicator(color: MyColors.primaryColor),
-                Flexible(child: Text('Loading...',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
+                Flexible(child: Text('Loading...',style: TextStyle(fontFamily: 'DMSans',fontSize: 16),)),
               ]),
         ),
       );
@@ -54,10 +56,10 @@ abstract class BaseView< T extends BaseViewModel, T2 extends StatefulWidget >
   void showMessage(String message) {
     showDialog(context: context, builder:(context) {
       return AlertDialog(
-        titlePadding:EdgeInsets.symmetric(vertical: 30,horizontal: 30) ,
+        titlePadding:EdgeInsets.symmetric(vertical: 20,horizontal: 20) ,
         title:  Center(
           child: Row(children: [
-            Flexible(child: Text('$message',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
+            Flexible(child: Text('$message',style: TextStyle(fontFamily: 'DMSans',fontSize: 14),)),
           ]),
         ),
       );

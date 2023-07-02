@@ -66,7 +66,7 @@ class _petInfoScreenState extends State<petInfoScreen> {
               children: [
                 Text(  pet.Name.length<8?
                 "${pet.Name}":"${pet.Name.substring(0,8)}...",
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20, fontFamily: 'DMSans'),
                     textAlign: TextAlign.center),
@@ -244,7 +244,6 @@ class _petInfoScreenState extends State<petInfoScreen> {
                         DataBaseUtils.DeletePet(pet);
                         Navigator.pop(context);
                         Navigator.pop(context);
-
                       },
                       child: Text(
                         'Yes',

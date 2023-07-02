@@ -1,19 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/myUser.dart';
-import 'package:pet_care/modules/AdaptionScreen/adaptionScreen.dart';
-import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
-import 'package:pet_care/modules/foundScreen/foundScreen.dart';
 import 'package:pet_care/modules/personal_info/edit_Info_Screen.dart';
 import 'package:pet_care/modules/personal_info/petInfoWidget.dart';
 import 'package:pet_care/modules/personal_info/postUserWidget.dart';
@@ -21,7 +16,6 @@ import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../models/Posts.dart';
 import '../../providers/userProvider.dart';
 
@@ -133,42 +127,45 @@ class _profileScreenState extends State<profileScreen> {
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     // print(pet?.length);
-                    return Column(children: [
-                      user!.data()!.Image != null
-                          ? CircleAvatar(
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(children: [
+                        user!.data()!.Image != null
+                            ? CircleAvatar(
+                            radius: 100,
+                            backgroundImage: NetworkImage(user!.data()!.Image!))
+                            : CircleAvatar(
+                          backgroundColor: Colors.grey.shade300,
                           radius: 100,
-                          backgroundImage: NetworkImage(user!.data()!.Image!))
-                          : CircleAvatar(
-                        backgroundColor: Colors.grey.shade300,
-                        radius: 100,
-                        backgroundImage: AssetImage(
-                          "assets/images/defaultUser.png",
-                          // fit: BoxFit.cover,
+                          backgroundImage: AssetImage(
+                            "assets/images/defaultUser.png",
+                            // fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10,),
-                      Text( user!.data()!.Name ,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontFamily: 'DMSans', fontSize: 20),
-                          textAlign: TextAlign.center),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text("Email : ${user!.data()!.email} ",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontFamily: 'DMSans', fontSize: 15),
-                          textAlign: TextAlign.center),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text("Address : ${user!.data()!.address}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontFamily: 'DMSans', fontSize: 15),
-                          textAlign: TextAlign.center),
-                    ],) ;
+                        SizedBox(height: 10,),
+                        Text( user!.data()!.Name ,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontFamily: 'DMSans', fontSize: 16),
+                            textAlign: TextAlign.center),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text("Email : ${user!.data()!.email} ",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontFamily: 'DMSans', fontSize: 14),
+                            textAlign: TextAlign.center),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text("Address : ${user!.data()!.address}",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontFamily: 'DMSans', fontSize: 14),
+                            textAlign: TextAlign.center),
+                      ],),
+                    ) ;
                   },
                   itemCount: 1,
                 );

@@ -19,10 +19,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends BaseView<login_vm, LoginScreen>
     implements loginNavigator {
+
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passController = TextEditingController();
-
+  bool hidePass=true;
   @override
   void initState() {
     // TODO: implement initState
@@ -91,7 +92,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                             if (value == null ||
                                 value!.isEmpty ||
                                 emailValid == false) {
-                              return "Please Enter Email ...";
+                              return "Please Enter Email";
                             }
                             return null;
                           },
@@ -102,7 +103,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                         TextFormField(
                           controller: passController,
                           keyboardType: TextInputType.text,
-                          obscureText: true,
+                          obscureText:hidePass,
                           decoration: InputDecoration(
                               hintText: "password",
                               border: OutlineInputBorder(
@@ -114,10 +115,16 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
                                     BorderSide(color: MyColors.primaryColor),
-                              )),
+                              ),
+                            suffixIcon: IconButton(onPressed: (){
+                              setState(() {
+                                hidePass= !hidePass ;
+                              });
+                            }, icon:Icon( hidePass? Icons.visibility:Icons.visibility_off)),
+                          ),
                           validator: (value) {
                             if (value == null || value!.isEmpty) {
-                              return "Please Enter Password ...";
+                              return "Please Enter Password";
                             }
                             return null;
                           },

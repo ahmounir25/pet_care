@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -56,11 +55,12 @@ class _mlScreenState extends State<mlScreen> {
       'Accept': 'application/json',
     };
     var response = await http.post(
-        Uri.parse("https://fd1f-34-75-24-151.ngrok-free.app/predict"),
+        Uri.parse("https://43d0-34-147-57-224.ngrok-free.app/predict"),
         body: base64,
         headers: requestHeaders);
 
-    print('///////////' + response.body);
+    print(response.body);
+
     setState(() {
       body = response.body;
       final jsonResponse = json.decode(body!);
@@ -68,8 +68,9 @@ class _mlScreenState extends State<mlScreen> {
 
       // Convert output to a List<String>
       outputList = List<String>.from(output);
+
       outputList.forEach((element) {
-        print(element + '/////////////');
+        print(element);
       });
     });
   }
@@ -176,13 +177,13 @@ class _mlScreenState extends State<mlScreen> {
             ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                 onPressed: () {
-                  //add
                   Predict();
                 },
                 child: Text('Search',style:TextStyle(fontFamily: 'DMSans'))),
             Flexible(
               fit: FlexFit.loose,
-              child: StreamBuilder<QuerySnapshot<Posts>>(
+              child:
+              StreamBuilder<QuerySnapshot<Posts>>(
                 stream: DataBaseUtils.readPostsFromFirestore(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -204,9 +205,6 @@ class _mlScreenState extends State<mlScreen> {
                             .join('.'))
                         .toList();
 
-                    // substrings.forEach((element) {
-                    //   print(element);
-                    // });
                     for (int j = 0; j < post.length; j++)
                     {
                       if (post[j].type == 'Found'&&post[j].pet==selectedPet)

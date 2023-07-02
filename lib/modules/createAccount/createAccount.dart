@@ -36,6 +36,9 @@ class _createAccountScreenState
   var phoneController = TextEditingController();
   var confirmPassController = TextEditingController();
   var addressController = TextEditingController();
+  bool hidepass = true;
+  bool hideConfirmPass = true;
+
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
@@ -94,8 +97,8 @@ class _createAccountScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image(
-                      image: AssetImage('assets/images/welcome.png'),
-              ),
+                    image: AssetImage('assets/images/welcome.png'),
+                  ),
                   SizedBox(
                     height: 5,
                   ),
@@ -217,10 +220,10 @@ class _createAccountScreenState
                                 final bool emailValid = RegExp(
                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                     .hasMatch(value!);
-                                if (value == null ||
-                                    value!.isEmpty ||
-                                    emailValid == false) {
+                                if (value == null || value!.isEmpty) {
                                   return "Please Enter Email";
+                                } else if (emailValid == false) {
+                                  return "Please Enter Valid Email";
                                 }
                                 return null;
                               },
@@ -258,19 +261,30 @@ class _createAccountScreenState
                               textInputAction: TextInputAction.next,
                               controller: passController,
                               keyboardType: TextInputType.text,
-                              obscureText: true,
+                              obscureText: hidepass,
                               decoration: InputDecoration(
-                                  hintText: "password",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                        color: MyColors.primaryColor),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                        color: MyColors.primaryColor),
-                                  )),
+                                hintText: "password",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      hidepass = !hidepass;
+                                    });
+                                  },
+                                  icon: Icon(hidepass
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                ),
+                              ),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
                                   return "Please Enter Password";
@@ -284,19 +298,30 @@ class _createAccountScreenState
                             TextFormField(
                               controller: confirmPassController,
                               textInputAction: TextInputAction.next,
-                              obscureText: true,
+                              obscureText: hideConfirmPass,
                               decoration: InputDecoration(
-                                  hintText: "Confirm Password",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                        color: MyColors.primaryColor),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                        color: MyColors.primaryColor),
-                                  )),
+                                hintText: "Confirm Password",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: MyColors.primaryColor),
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      hideConfirmPass = !hideConfirmPass;
+                                    });
+                                  },
+                                  icon: Icon(hideConfirmPass
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                ),
+                              ),
                               validator: (value) {
                                 if (value == null || value!.isEmpty) {
                                   return "Please Enter Password Again";
@@ -316,7 +341,11 @@ class _createAccountScreenState
                                 onPressed: () {
                                   createAccount();
                                 },
-                                child: Text('Register',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                      fontFamily: 'DMSans', fontSize: 18),
+                                )),
                             SizedBox(
                               height: 10,
                             ),
@@ -328,7 +357,7 @@ class _createAccountScreenState
                                 child: Text(
                                   "Have an account ?",
                                   style: TextStyle(
-                                    fontFamily: 'DMSans',
+                                      fontFamily: 'DMSans',
                                       color: MyColors.primaryColor,
                                       decoration: TextDecoration.underline),
                                 )),
@@ -367,7 +396,8 @@ class _createAccountScreenState
                 children: <Widget>[
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery',style: TextStyle(fontFamily: 'DMSans')),
+                      title: new Text('Gallery',
+                          style: TextStyle(fontFamily: 'DMSans')),
                       onTap: () {
                         imgFromGallery();
                         Navigator.of(context).pop();
