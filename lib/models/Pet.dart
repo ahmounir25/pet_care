@@ -5,7 +5,6 @@ enum MyEnum { Cat, Dog, Turtle, Bird, Monkey, Fish, Other }
 class Pet {
   static String collectionName = 'PETS';
   String id;
-
   String Name;
   String? age;
   String gender;

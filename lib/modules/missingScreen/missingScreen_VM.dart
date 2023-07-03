@@ -16,34 +16,34 @@ import 'missingScreenNavigator.dart';
 
 class missingScreen_VM extends BaseViewModel<missingScreenNavigator> {
 
-  void addPost(
-      String Pubname,
-      String pubID,
-      String? pubImage,
-      String phone,
-      String address,
-      String pet,
-      String content,
-      String type,
-      int dateTime,
-      String? Image,GlobalKey<FormState> FormKey,BuildContext context ) {
-    if (FormKey.currentState!.validate() && Image != null) {
-      // showLoading();
-      Posts post = Posts(
-          publisherName: Pubname,
-          publisherId: pubID,
-          pubImage: pubImage,
-          phone: phone,
-          address: address,
-          pet: pet,
-          Content: content,
-          type: type,
-          dateTime: dateTime,
-          Image: Image);
-      DataBaseUtils.addPostToFireStore(post).then((value) {
-        Navigator.pop(context);
-      });
-    }
-  }
+  // void addPost(
+  //     String Pubname,
+  //     String pubID,
+  //     String? pubImage,
+  //     String phone,
+  //     String address,
+  //     String pet,
+  //     String content,
+  //     String type,
+  //     int dateTime,
+  //     String? Image,GlobalKey<FormState> FormKey,BuildContext context ) {
+  //   if (FormKey.currentState!.validate() && Image != null) {
+  //     // showLoading();
+  //     Posts post = Posts(
+  //         publisherName: Pubname,
+  //         publisherId: pubID,
+  //         pubImage: pubImage,
+  //         phone: phone,
+  //         address: address,
+  //         pet: pet,
+  //         Content: content,
+  //         type: type,
+  //         dateTime: dateTime,
+  //         Image: Image);
+  //     DataBaseUtils.addPostToFireStore(post).then((value) {
+  //       Navigator.pop(context);
+  //     });
+  //   }
+  // }
 
 }

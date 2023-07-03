@@ -122,13 +122,19 @@ class DataBaseUtils {
   }
 
   static updatePost(
-      Posts post, String content, String type, String? Image, String pet) {
+      Posts post, String content,String type ,String? Image, String pet) {
+    var img=post.Image!;
     FirebaseFirestore.instance.collection('POSTS').doc(post.id).update({
       "Content": content.isEmpty ? post.Content : content,
       "type": type.isEmpty ? post.type : type,
       "Image": Image,
       "pet": pet
+    }).then((value){
+      if(img!=Image){
+        DeleteImg(img);
+      }
     });
+
   }
 
 //Services
@@ -148,66 +154,5 @@ class DataBaseUtils {
     return snapShotPost;
   }
 
-// static CollectionReference<Pet> getPetsCollection() {
-//   return FirebaseFirestore.instance
-//       .collection(Pet.collectionName)
-//       .withConverter<Pet>(
-//         fromFirestore: (snapshot, options) {
-//           return Pet.fromJson(snapshot.data()!);
-//         },
-//         toFirestore: (value, options) => value.toJson(),
-//       );
-// }
-//
-// static Future<void> addPetToFireStore(Pet pet) {
-//   var docRef = getPetsCollection().doc();
-//   pet.id = docRef.id;
-//   return docRef.set(pet);
-// }
-//
-// static Future<List<Pet>> readPetFromFirestore() async {
-//   var snapShotRoom = await getPetsCollection().get();
-//   List<Pet> pets = snapShotRoom.docs.map((doc) => doc.data()).toList();
-//   return pets;
-// }
-
-// static Future<List<Room>> getRoomFromFirebase() async {
-//   var snapShotRoom = await getRoomsCollection().get();
-//   List<Room> rooms = snapShotRoom.docs.map((doc) => doc.data()).toList();
-//   return rooms;
-// }
-
-// static Future<void> addRoomToFirebase(Room room) {
-//   var docRef = getRoomsCollection().doc();
-//   room.id = docRef.id;
-//   return docRef.set(room);
-// }
-//
-// static Future<List<Room>> getRoomFromFirebase() async {
-//   var snapShotRoom = await getRoomsCollection().get();
-//   List<Room> rooms = snapShotRoom.docs.map((doc) => doc.data()).toList();
-//   return rooms;
-// }
-//
-// static CollectionReference<Message> getMessagesCollection(String roomID) {
-//   return getRoomsCollection().doc(roomID)
-//       .collection(Message.collectionName)
-//       .withConverter<Message>(
-//     fromFirestore: (snapshot, options) {
-//       return Message.fromJson(snapshot.data()!);
-//     },
-//     toFirestore: (value, options) => value.toJson(),
-//   );
-// }
-// static Future<void> addMessageToFireStore(Message message){
-//   var msgRef = getMessagesCollection(message.roomId).doc();
-//   message.id=msgRef.id;
-//   return msgRef.set(message);
-// }
-//
-// static Stream<QuerySnapshot<Message>>getMessageFromFirebase(String roomId)  {
-//   var snapShotMessage =  getMessagesCollection(roomId).orderBy('dateTime').snapshots();
-//   return snapShotMessage;
-// }
 
 }

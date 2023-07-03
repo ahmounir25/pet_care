@@ -25,8 +25,8 @@ class userPostsWidget extends StatefulWidget {
 class _userPostsWidgetState extends State<userPostsWidget> {
   var contentController = TextEditingController();
 
-  var typeController = TextEditingController();
-  var petController = TextEditingController();
+  // var typeController = TextEditingController();
+  // var petController = TextEditingController();
 
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
 
@@ -45,29 +45,50 @@ class _userPostsWidgetState extends State<userPostsWidget> {
     setState(() {
       if (pickedFile != null) {
         _photo = File(pickedFile.path);
-        uploadFile();
+        // uploadFile();
       } else {
         print('No image selected.');
       }
     });
   }
 
-  Future uploadFile() async {
+  Future uploadFile(String postType, String selectedPet) async {
     if (_photo == null) return;
     final fileName = Path.basename(_photo!.path);
     // final destination = '${emailController.text}';
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child("PostImages/$fileName");
-      await ref.putFile(_photo!);
-      await ref.getDownloadURL().then((value) {
-        ImageURL = value;
-      });
+      if (postType == "Found" &&
+          (selectedPet == 'Cat' || selectedPet == 'Dog')) {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Found/$selectedPet/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      } else if (postType == "Found" &&
+          (selectedPet != 'Cat' && selectedPet != 'Dog')) {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Found/Other/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      } else {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      }
     } catch (e) {
       print('error occured');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -340,14 +361,6 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text('You Should Add Pet\'s Image',
-                                style: TextStyle(
-                                  fontFamily: 'DMSans',
-                                  decoration: TextDecoration.underline,
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
                             TextFormField(
                               textInputAction: TextInputAction.next,
                               maxLines: 8,
@@ -371,20 +384,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                             SizedBox(
                               height: 5,
                             ),
-                            TextField(
-                              controller: petController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
-                                ),
-                                suffixIcon: DropdownButtonFormField(
+                             DropdownButtonFormField(
                                   value: selectedPet,
                                   onChanged: (String? newValue) {
                                     setState(() {
@@ -401,25 +401,11 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                     );
                                   }).toList(),
                                 ),
-                              ),
-                            ),
+
                             SizedBox(
                               height: 5,
                             ),
-                            TextField(
-                              controller: typeController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
-                                ),
-                                suffixIcon: DropdownButtonFormField(
+                            DropdownButtonFormField(
                                   value: selectedValue,
                                   onChanged: (String? newValue) {
                                     setState(() {
@@ -436,8 +422,6 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                     );
                                   }).toList(),
                                 ),
-                              ),
-                            ),
                             SizedBox(
                               height: 5,
                             ),
@@ -446,16 +430,25 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                   primary: MyColors.primaryColor,
                                 ),
                                 onPressed: () {
+                                  uploadFile(selectedValue, selectedPet).then((value){
+                                    DataBaseUtils.updatePost(
+                                        widget.post,
+                                        contentController.text,
+                                        selectedValue,
+                                        ImageURL == null ? widget.post.Image : ImageURL,
+                                        selectedPet);
+                                    Navigator.pop(context);
+                                  });
                                   //update
-                                  DataBaseUtils.updatePost(
-                                      widget.post,
-                                      contentController.text,
-                                      selectedValue,
-                                      ImageURL == null
-                                          ? widget.post.Image
-                                          : ImageURL,
-                                      selectedPet);
-                                  Navigator.pop(context);
+                                  // DataBaseUtils.updatePost(
+                                  //     widget.post,
+                                  //     contentController.text,
+                                  //     selectedValue,
+                                  //     ImageURL == null
+                                  //         ? widget.post.Image
+                                  //         : ImageURL,
+                                  //     selectedPet);
+                                  // Navigator.pop(context);
                                   setState(() {});
                                 },
                                 child: Text(

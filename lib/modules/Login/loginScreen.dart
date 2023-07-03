@@ -28,7 +28,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    viewModel.navigator = this; //important .......................
+    viewModel.navigator = this;
   }
 
   @override

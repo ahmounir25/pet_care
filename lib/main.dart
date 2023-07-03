@@ -7,6 +7,7 @@ import 'package:pet_care/modules/HomeScreen/HomeScreen.dart';
 import 'package:pet_care/modules/Login/loginScreen.dart';
 import 'package:pet_care/modules/ML_Screen/mlScreen.dart';
 import 'package:pet_care/modules/ServicesScreen/serviceScreen.dart';
+import 'package:pet_care/modules/PostScreen/addPostScreen.dart';
 import 'package:pet_care/modules/createAccount/createAccount.dart';
 import 'package:pet_care/modules/personal_info/edit_Info_Screen.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
         petInfoScreen.routeName:(context) => petInfoScreen(),
         QrScanning.routeName:(context)=>QrScanning(),
         serviceScreen.routeName:(context) => serviceScreen(),
+        addPostScreen.routeName:(context) => addPostScreen(),
         editScreen.routeName:(context) => editScreen(),
         mlScreen.routeName:(context) => mlScreen(),
       },
