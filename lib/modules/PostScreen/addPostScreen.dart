@@ -111,6 +111,8 @@ class _addPostScreenState extends State<addPostScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(color: MyColors.primaryColor),
+        title: Text('Add Post',style: TextStyle(fontFamily: 'DMSans',color: MyColors.primaryColor)),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
@@ -222,22 +224,25 @@ class _addPostScreenState extends State<addPostScreen> {
                                 borderSide:
                                 BorderSide(color: MyColors.primaryColor),
                               ),
-                              suffixIcon: DropdownButtonFormField(
-                                value: selectedPet,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedPet = newValue!;
-                                  });
-                                },
-                                items: items.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(' $value ',
-                                            style: TextStyle(
-                                                fontFamily: 'DMSans')),
-                                      );
-                                    }).toList(),
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DropdownButtonFormField(
+                                  value: selectedPet,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedPet = newValue!;
+                                    });
+                                  },
+                                  items: items.map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(' $value ',
+                                              style: TextStyle(
+                                                  fontFamily: 'DMSans')),
+                                        );
+                                      }).toList(),
+                                ),
                               ),
                             ),
                           ),
@@ -257,22 +262,25 @@ class _addPostScreenState extends State<addPostScreen> {
                                 borderSide:
                                 BorderSide(color: MyColors.primaryColor),
                               ),
-                              suffixIcon: DropdownButtonFormField(
-                                value: selectedValue,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedValue = newValue!;
-                                  });
-                                },
-                                items: Type.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(' $value ',
-                                            style: TextStyle(
-                                                fontFamily: 'DMSans')),
-                                      );
-                                    }).toList(),
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DropdownButtonFormField(
+                                  value: selectedValue,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedValue = newValue!;
+                                    });
+                                  },
+                                  items: Type.map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(' $value ',
+                                              style: TextStyle(
+                                                  fontFamily: 'DMSans')),
+                                        );
+                                      }).toList(),
+                                ),
                               ),
                             ),
                           ),
@@ -389,20 +397,4 @@ class _addPostScreenState extends State<addPostScreen> {
     }
   }
 
-// void addPost(
-//     String Pubname,
-//     String pubID,
-//     String? pubImage,
-//     String phone,
-//     String address,
-//     String pet,
-//     String content,
-//     String type,
-//     int dateTime,
-//     String? Image) {
-//   viewModel.addPost(Pubname, pubID, pubImage, phone, address, pet, content, type, dateTime, Image, FormKey,context);
-//   contentController.text = '';
-//   _photo = null;
-//   ImageURL = null;
-// }
 }
