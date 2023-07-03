@@ -39,11 +39,11 @@ class _QrScanningState extends State<QrScanning> {
                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   if (result != null)
-                    Text('Content :\n${result!.code}',style: TextStyle(fontSize: 15),)
+                    Center(child: Text('Content :\n${result!.code}',style: TextStyle(fontSize: 16),))
                   else
-                    const Text('Scan The QR Code',style: TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.bold,fontSize: 12), ),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
+                    const Text('Scan The QR Code',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontFamily: 'DMSans'), ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -54,16 +54,16 @@ class _QrScanningState extends State<QrScanning> {
                             await controller?.resumeCamera();
                           },
                           child: const Text('Start',
-                              style: TextStyle(fontSize: 12)),
+                              style: TextStyle(fontSize: 10,fontFamily: 'DMSans')),
                         ),
                         SizedBox(width: 10,),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(primary:MyColors.primaryColor ),
+                          style: ElevatedButton.styleFrom(primary:MyColors.primaryColor, ),
                           onPressed: () async {
                             await controller?.pauseCamera();
                           },
                           child: const Text('pause',
-                              style: TextStyle(fontSize: 12)),
+                              style: TextStyle(fontSize: 10,fontFamily: 'DMSans')),
                         ),
                       ],
                     ),

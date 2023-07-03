@@ -142,8 +142,8 @@ class _addPostScreenState extends State<addPostScreen> {
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(),
                                   child: Container(
-                                    width: 120,
-                                    height: 120,
+                                    width: 150,
+                                    height: 150,
                                     child: Image.file(_photo!),
                                   ))
                                   : AvatarGlow(

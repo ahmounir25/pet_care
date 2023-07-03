@@ -55,7 +55,7 @@ class _mlScreenState extends State<mlScreen> {
       'Accept': 'application/json',
     };
     var response = await http.post(
-        Uri.parse("https://43d0-34-147-57-224.ngrok-free.app/predict"),
+        Uri.parse("https://bce9-35-185-194-85.ngrok-free.app/predict"),
         body: base64,
         headers: requestHeaders);
 

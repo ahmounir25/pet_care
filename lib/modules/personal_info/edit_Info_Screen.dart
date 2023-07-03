@@ -70,6 +70,11 @@ class _editScreenState extends State<editScreen> {
     var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Your Information',style: TextStyle(
+          color: MyColors.primaryColor,
+            fontFamily: 'DMSans',
+            fontSize: 16),),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
@@ -252,7 +257,6 @@ class _editScreenState extends State<editScreen> {
                                                 ImageURL == null
                                                     ? user!.data()!.Image!
                                                     : ImageURL,);
-
                                               Navigator.pop(context);
                                             });
                                           },
@@ -312,134 +316,4 @@ class _editScreenState extends State<editScreen> {
   }
 }
 
-// Column(
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-// Padding(
-// padding: const EdgeInsets.all(20),
-// child: Form(
-// key: FormKey,
-// child: Column(
-// crossAxisAlignment: CrossAxisAlignment.stretch,
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-// Center(
-// child: GestureDetector(
-// onTap: () {
-// _showPicker(context);
-// },
-// child: _photo != null
-// ? CircleAvatar(
-// radius: 75,
-// backgroundImage: FileImage(
-// _photo!,
-// ))
-// : AvatarGlow(
-// endRadius: 100,
-// glowColor: Colors.purpleAccent,
-// duration:
-// Duration(milliseconds: 2000),
-// repeat: true,
-// showTwoGlows: true,
-// repeatPauseDuration:
-// Duration(milliseconds: 100),
-// child: Material(
-// // Replace this child with your own
-// elevation: 0,
-// shape: CircleBorder(),
-// child:   provider.user?.Image == null ?CircleAvatar(
-// radius: 75,
-// backgroundColor:
-// Colors.grey.shade300,
-// backgroundImage:AssetImage( 'assets/images/AddImage.png')
-// ):CircleAvatar(
-// radius: 75,
-// backgroundColor:
-// Colors.grey.shade300,
-// backgroundImage:NetworkImage(provider.user?.Image??"")
-// ),
-// ),
-// )),
-// ),
-// SizedBox(
-// height: 5,
-// ),
-// TextFormField(
-// controller: fNameController,
-// textInputAction: TextInputAction.next,
-// decoration: InputDecoration(
-// hintText: provider.user?.Name,
-// border: OutlineInputBorder(
-// gapPadding: 3,
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// ),
-// enabledBorder: OutlineInputBorder(
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// )),
-// ),
-// SizedBox(
-// height: 10,
-// ),
-// TextFormField(
-// controller: phoneController,
-// keyboardType: TextInputType.number,
-// textInputAction: TextInputAction.next,
-// decoration: InputDecoration(
-// hintText: provider.user?.phone,
-// border: OutlineInputBorder(
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// ),
-// enabledBorder: OutlineInputBorder(
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// )),
-// ),
-// SizedBox(
-// height: 10,
-// ),
-// TextFormField(
-// controller: addressController,
-// textInputAction: TextInputAction.next,
-// decoration: InputDecoration(
-// hintText: provider.user?.address,
-// border: OutlineInputBorder(
-// gapPadding: 3,
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// ),
-// enabledBorder: OutlineInputBorder(
-// borderRadius: BorderRadius.circular(12),
-// borderSide: BorderSide(
-// color: MyColors.primaryColor),
-// )),
-// ),
-// SizedBox(
-// height: 20,
-// ),
-// ElevatedButton(
-// style: ElevatedButton.styleFrom(
-// minimumSize: Size.fromHeight(50),
-// primary: MyColors.primaryColor),
-// onPressed: () {
-// setState(() {
-// DataBaseUtils.updateUser(provider.user!, fNameController.text, phoneController.text, addressController.text,ImageURL == null
-// ? provider.user?.Image
-//     : ImageURL,);
-//
-// Navigator.pop(context);
-// });
-// },
-// child: Text('Save',style: TextStyle(fontFamily: 'DMSans',fontSize: 18),)),
-// ],
-// )),
-// ),
-// ],
-// ),
+
