@@ -25,7 +25,7 @@ class Pet {
       required this.ownerPhone,
       required this.type,
       this.Image = null,
-      this.qr}); // without pass cause i will n't save  or generate it
+      this.qr});
 
   Pet.fromJson(Map<String, dynamic> map)
       : this(

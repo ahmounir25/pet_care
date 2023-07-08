@@ -74,7 +74,6 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                           Navigator.pushNamed(context, profileScreen.routeName);
                         }),
               ),
-
           title: Text('Pet Care',
               style: TextStyle(
                   fontFamily: 'DMSans',

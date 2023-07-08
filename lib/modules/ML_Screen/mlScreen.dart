@@ -21,7 +21,6 @@ class mlScreen extends StatefulWidget {
 }
 
 class _mlScreenState extends State<mlScreen> {
-  String? ImageURL;
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   String? body;
@@ -55,7 +54,7 @@ class _mlScreenState extends State<mlScreen> {
     };
     var response;
      await http.post(
-        Uri.parse("https://e82f-34-145-168-239.ngrok-free.app/predict"), body: base64,
+        Uri.parse("https://6ceb-35-199-38-204.ngrok-free.app/predict"), body: base64,
          headers: requestHeaders).then((value){
            response=value;
           Navigator.pop(context);
@@ -80,32 +79,11 @@ class _mlScreenState extends State<mlScreen> {
       setState(() {
         if (value != null) {
           _photo = File(value.path);
-          // print('////////////////photo////////////');
-          // print(_photo);
-          uploadFile();
         } else {
           print('No image selected.');
         }
       });
     });
-  }
-
-  Future uploadFile() async {
-    if (_photo == null) return;
-    final fileName = Path.basename(_photo!.path);
-    // final destination = '${emailController.text}';
-
-    try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child("ML_Image/$fileName");
-      await ref.putFile(_photo!);
-      await ref.getDownloadURL().then((value) {
-        ImageURL = value;
-      });
-    } catch (e) {
-      print('error occured');
-    }
   }
 
   @override
@@ -188,6 +166,7 @@ class _mlScreenState extends State<mlScreen> {
                   Predict();
                 },
                 child: Text('Search',style:TextStyle(fontFamily: 'DMSans'))),
+
             Flexible(
               fit: FlexFit.loose,
               child:
@@ -220,7 +199,6 @@ class _mlScreenState extends State<mlScreen> {
                         foundPosts.add(post[j]);
                       }
                     }
-                    // print(foundPosts.length);
                       for (int k = 0; k < substrings.length; k++)
                       {
                         for(int l=0;l<foundPosts.length;l++){
@@ -229,7 +207,6 @@ class _mlScreenState extends State<mlScreen> {
                         }
                       }
                       }
-                    // print(latest.length);
                   }
                   return ListView.builder(
                     shrinkWrap: true,

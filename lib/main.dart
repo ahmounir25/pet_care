@@ -29,7 +29,7 @@ void main() async
 }
 
 class MyApp extends StatelessWidget {
-  // const MyApp({Key? key}) : super(key: key);
+
   late StreamSubscription<User?> user;
 
   void initState() {
@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
     user.cancel();
 
   }
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<UserProvider>(context);

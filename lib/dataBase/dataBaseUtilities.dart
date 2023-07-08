@@ -3,10 +3,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/Posts.dart';
 import 'package:pet_care/models/Services.dart';
-
 import '../models/myUser.dart';
 
 class DataBaseUtils {
+
 //Users
   static CollectionReference<myUser> getUsersCollection() {
     return FirebaseFirestore.instance
@@ -19,7 +19,8 @@ class DataBaseUtils {
         );
   }
 
-  static Future<void> addUserToFireStore(myUser user) {
+  static Future<void> addUserToFireStore(myUser user)
+  {
     return getUsersCollection().doc(user.id).set(user);
   }
 

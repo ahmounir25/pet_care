@@ -1,4 +1,3 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/models/Pet.dart';
 
 class myUser {
@@ -17,7 +16,7 @@ class myUser {
       required this.phone,
       required this.email,
       required this.address,
-      this.Image = null}); // without pass cause i will n't save  or generate it
+      this.Image = null});
 
   myUser.fromJson(Map<String, dynamic> map)
       : this(
