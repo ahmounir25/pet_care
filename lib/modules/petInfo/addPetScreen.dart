@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,12 +18,12 @@ class addPetScreen extends StatefulWidget {
 }
 
 class _addPetScreenState extends State<addPetScreen> {
+
   var petNamecntroller = TextEditingController();
   var ageController = TextEditingController();
   var typeController = TextEditingController();
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
   String? ImageURL;
-
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   File? _photo;
@@ -154,20 +153,20 @@ class _addPetScreenState extends State<addPetScreen> {
                               }
                               else if (_photo == null ) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: new Text(
+                                    const SnackBar(content: Text(
                                       " Please Add Pet's Image " ,
                                       style: TextStyle(fontFamily: 'DMSans'),)));
                               }
                               else if( isDateSelected==false){
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: new Text(
+                                    const SnackBar(content: Text(
                                       " Please Select Pet's birth day " ,
                                       style: TextStyle(fontFamily: 'DMSans'),)));
                               }
                               return null;
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           TextField(
@@ -299,6 +298,7 @@ class _addPetScreenState extends State<addPetScreen> {
                                 minimumSize: Size.fromHeight(50),
                               ),
                               onPressed: () {
+                                showLoading();
                                 uploadFile().then((value) {
                                   addPet(
                                       petNamecntroller.text,
@@ -311,6 +311,7 @@ class _addPetScreenState extends State<addPetScreen> {
                                       selectedValue,
                                       selectedGender,
                                       ImageURL);
+                                  Navigator.pop(context);
                                 });
                               },
                               child: Text(
@@ -349,7 +350,6 @@ class _addPetScreenState extends State<addPetScreen> {
   void addPet(String name, String? age, String ownerName, String ownerID,
       String OwnerPhone, String type, String gender, String? Image) {
     if (FormKey.currentState!.validate() && Image != null && isDateSelected) {
-      // showLoading();
       Pet pet = Pet(
           Name: name,
           age: age,
@@ -407,8 +407,8 @@ class _addPetScreenState extends State<addPetScreen> {
           title: Center(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CircularProgressIndicator(),
+                children: const [
+                  CircularProgressIndicator(color: MyColors.primaryColor,),
                   Text(
                     'Loading...',
                     style: TextStyle(fontFamily: 'DMSans', fontSize: 12),

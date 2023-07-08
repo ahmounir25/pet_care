@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:pet_care/modules/ML_Screen/mlScreen.dart';
 import 'package:pet_care/modules/QrCode/QrScanning.dart';
@@ -15,10 +11,7 @@ import 'package:pet_care/modules/foundScreen/foundScreen.dart';
 import 'package:pet_care/modules/missingScreen/missingScreen.dart';
 import 'package:pet_care/modules/personal_info/profileScreen.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../base.dart';
-import '../../dataBase/dataBaseUtilities.dart';
-import '../../models/myUser.dart';
 import '../../providers/userProvider.dart';
 import '../../shared/colors.dart';
 import '../AdaptionScreen/adaptionScreen.dart';
@@ -37,8 +30,8 @@ class homeScreen extends StatefulWidget {
 class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
     with TickerProviderStateMixin
     implements homeScreenNavigator {
-  late TabController _tabController;
 
+  late TabController _tabController;
   @override
   void initState() {
     // TODO: implement initState
@@ -51,12 +44,12 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
   Widget build(BuildContext context) {
     var provider =  Provider.of<UserProvider>(context);
     int navigatorBarCntr = 0;
+
     List<Widget> screensList = [
       adaptionScreen(),
       missingScreen(),
       foundScreen(),
     ];
-    // var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -133,7 +126,6 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
           FloatingNavbarItem(icon: Icons.home, title: 'Home'),
           FloatingNavbarItem(icon: Icons.search, title: 'Search'),
           FloatingNavbarItem(icon: Icons.medical_services, title: 'Services'),
-          // FloatingNavbarItem(icon: Icons.settings, title: 'Setti
         ],
       ),
     );
@@ -197,7 +189,8 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
           );
         },
       );
-    } else {
+    }
+    else {
       Navigator.pushNamed(context, serviceScreen.routeName);
     }
   }
@@ -223,6 +216,7 @@ class _homeScreenState extends BaseView<homeScreen_VM, homeScreen>
                         primary: MyColors.primaryColor),
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
+                      Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, LoginScreen.routeName);
                     },

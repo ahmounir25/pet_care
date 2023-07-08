@@ -116,7 +116,7 @@ class postWiget extends StatelessWidget {
               width: 3,
             ),
             Text(
-              post.address,
+              post.address.length>9?post.address.substring(0,8):post.address,
               style: TextStyle(fontSize: 12, color: Colors.grey),
             )
           ],

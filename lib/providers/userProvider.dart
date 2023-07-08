@@ -4,6 +4,7 @@ import '../dataBase/dataBaseUtilities.dart';
 import '../models/myUser.dart';
 
 class UserProvider extends ChangeNotifier {
+
   myUser? user;
   User? userAuth;
 

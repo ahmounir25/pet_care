@@ -1,7 +1,5 @@
-// import '../../providers/userProvider.dart';
 
 import 'dart:io';
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
@@ -28,6 +26,7 @@ class createAccountScreen extends StatefulWidget {
 class _createAccountScreenState
     extends BaseView<CreateAccount_vm, createAccountScreen>
     implements createAccountNavigator {
+
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
   String? ImageURL;
   var emailController = TextEditingController();
@@ -85,6 +84,7 @@ class _createAccountScreenState
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
       create: (context) {
         return viewModel;
@@ -96,10 +96,10 @@ class _createAccountScreenState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image(
-                    image: AssetImage('assets/images/welcome.png'),
+                  const Image(
+                    image: const AssetImage('assets/images/welcome.png'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Padding(
@@ -125,27 +125,27 @@ class _createAccountScreenState
                                           endRadius: 100,
                                           glowColor: Colors.purpleAccent,
                                           duration:
-                                              Duration(milliseconds: 2000),
+                                              const Duration(milliseconds: 2000),
                                           repeat: true,
                                           showTwoGlows: true,
                                           repeatPauseDuration:
-                                              Duration(milliseconds: 100),
+                                              const Duration(milliseconds: 100),
                                           child: Material(
                                             // Replace this child with your own
                                             elevation: 0,
-                                            shape: CircleBorder(),
+                                            shape: const CircleBorder(),
                                             child: CircleAvatar(
                                               radius: 75,
                                               backgroundColor:
                                                   Colors.grey.shade300,
-                                              backgroundImage: AssetImage(
+                                              backgroundImage: const AssetImage(
                                                 'assets/images/AddImage.png',
                                               ),
                                             ),
                                           ),
                                         )),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             TextFormField(
@@ -156,12 +156,12 @@ class _createAccountScreenState
                                   border: OutlineInputBorder(
                                     gapPadding: 3,
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
@@ -171,7 +171,7 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -182,12 +182,12 @@ class _createAccountScreenState
                                   hintText: "Phone Number",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
@@ -197,7 +197,7 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -208,12 +208,12 @@ class _createAccountScreenState
                                   hintText: "E-mail",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
@@ -228,7 +228,7 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -239,12 +239,12 @@ class _createAccountScreenState
                                   border: OutlineInputBorder(
                                     gapPadding: 3,
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   )),
                               validator: (value) {
@@ -254,7 +254,7 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -267,12 +267,12 @@ class _createAccountScreenState
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
+                                      const BorderSide(color: MyColors.primaryColor),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
+                                      const BorderSide(color: MyColors.primaryColor),
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
@@ -292,7 +292,7 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -304,12 +304,12 @@ class _createAccountScreenState
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
+                                      const BorderSide(color: MyColors.primaryColor),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                      BorderSide(color: MyColors.primaryColor),
+                                      const BorderSide(color: MyColors.primaryColor),
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
@@ -331,22 +331,23 @@ class _createAccountScreenState
                                 return null;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    minimumSize: Size.fromHeight(50),
+                                    minimumSize: const Size.fromHeight(50),
                                     primary: MyColors.primaryColor),
+
                                 onPressed: () {
                                   createAccount();
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Register',
                                   style: TextStyle(
                                       fontFamily: 'DMSans', fontSize: 18),
                                 )),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             InkWell(
@@ -354,7 +355,7 @@ class _createAccountScreenState
                                   Navigator.pushReplacementNamed(
                                       context, LoginScreen.routeName);
                                 },
-                                child: Text(
+                                child: const Text(
                                   "Have an account ?",
                                   style: TextStyle(
                                       fontFamily: 'DMSans',
@@ -392,24 +393,16 @@ class _createAccountScreenState
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
-              child: new Wrap(
+              child: Wrap(
                 children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery',
+                  ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text('Gallery',
                           style: TextStyle(fontFamily: 'DMSans')),
                       onTap: () {
                         imgFromGallery();
                         Navigator.of(context).pop();
                       }),
-                  // new ListTile(
-                  //   leading: new Icon(Icons.photo_camera),
-                  //   title: new Text('Camera'),
-                  //   onTap: () {
-                  //     imgFromCamera();
-                  //     Navigator.of(context).pop();
-                  //   },
-                  // ),
                 ],
               ),
             ),

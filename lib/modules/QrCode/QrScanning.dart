@@ -5,13 +5,15 @@ import 'package:pet_care/shared/colors.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrScanning extends StatefulWidget {
- static const String  routeName='scanning';
+
+  static const String routeName = 'scanning';
 
   @override
   State<QrScanning> createState() => _QrScanningState();
 }
 
 class _QrScanningState extends State<QrScanning> {
+
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
@@ -39,31 +41,48 @@ class _QrScanningState extends State<QrScanning> {
                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   if (result != null)
-                    Center(child: Text('Content :\n${result!.code}',style: TextStyle(fontSize: 16),))
+                    Center(
+                        child: Text(
+                      'Content :\n${result!.code}',
+                      style: TextStyle(fontSize: 18, fontFamily: 'DMSans'),
+                    ))
                   else
-                    const Text('Scan The QR Code',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontFamily: 'DMSans'), ),
+                    const Text(
+                      'Scan The QR Code',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          fontFamily: 'DMSans'),
+                    ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(primary:MyColors.primaryColor ),
+                          style: ElevatedButton.styleFrom(
+                              primary: MyColors.primaryColor),
                           onPressed: () async {
                             await controller?.resumeCamera();
                           },
                           child: const Text('Start',
-                              style: TextStyle(fontSize: 10,fontFamily: 'DMSans')),
+                              style: TextStyle(
+                                  fontSize: 10, fontFamily: 'DMSans')),
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(primary:MyColors.primaryColor, ),
+                          style: ElevatedButton.styleFrom(
+                            primary: MyColors.primaryColor,
+                          ),
                           onPressed: () async {
                             await controller?.pauseCamera();
                           },
                           child: const Text('pause',
-                              style: TextStyle(fontSize: 10,fontFamily: 'DMSans')),
+                              style: TextStyle(
+                                  fontSize: 10, fontFamily: 'DMSans')),
                         ),
                       ],
                     ),
@@ -79,13 +98,13 @@ class _QrScanningState extends State<QrScanning> {
 
   Widget _buildQrView(BuildContext context) {
     var scanArea = (MediaQuery.of(context).size.width < 350 ||
-        MediaQuery.of(context).size.height < 350)
+            MediaQuery.of(context).size.height < 350)
         ? 150.0
         : 300.0;
 
     return QRView(
       key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
+      onQRViewCreated: getQR_info,
       overlay: QrScannerOverlayShape(
           borderColor: Colors.white,
           borderRadius: 10,
@@ -96,7 +115,7 @@ class _QrScanningState extends State<QrScanning> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  void getQR_info(QRViewController controller) {
     setState(() {
       this.controller = controller;
     });
@@ -122,4 +141,3 @@ class _QrScanningState extends State<QrScanning> {
     super.dispose();
   }
 }
-

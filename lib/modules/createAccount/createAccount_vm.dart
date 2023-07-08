@@ -5,6 +5,7 @@ import '../../dataBase/dataBaseUtilities.dart';
 import 'connector.dart';
 
 class CreateAccount_vm extends BaseViewModel<createAccountNavigator> {
+
   void createAccount(String Name, String phone, String email, String pass,
       String confirmPass, String address, String? Image) async {
     try {
@@ -22,6 +23,7 @@ class CreateAccount_vm extends BaseViewModel<createAccountNavigator> {
           email: email,
           address: address,
           Image: Image);
+
       DataBaseUtils.addUserToFireStore(user);
       navigator?.hideDialog();
       navigator?.goHome(user);

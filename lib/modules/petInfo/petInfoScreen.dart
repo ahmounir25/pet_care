@@ -30,10 +30,9 @@ class _petInfoScreenState extends State<petInfoScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: BackButton(
+        leading: const BackButton(
           color: MyColors.primaryColor,
         ),
-
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -42,15 +41,15 @@ class _petInfoScreenState extends State<petInfoScreen> {
             pet.Image != null
                 ? Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: CircleAvatar(
                         radius: 100,
                         backgroundImage: NetworkImage(pet.Image ?? "")),
                   )
                 : Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: CircleAvatar(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const CircleAvatar(
                       radius: 100,
                       backgroundImage: AssetImage(
                         "assets/images/appLogo.jpg",
@@ -58,115 +57,122 @@ class _petInfoScreenState extends State<petInfoScreen> {
                       ),
                     ),
                   ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(  pet.Name.length<8?
-                "${pet.Name}":"${pet.Name.substring(0,8)}...",
+                Text(
+                    pet.Name.length < 8
+                        ? "${pet.Name}"
+                        : "${pet.Name.substring(0, 8)}...",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 20, fontFamily: 'DMSans'),
+                    style: const TextStyle(fontSize: 20, fontFamily: 'DMSans'),
                     textAlign: TextAlign.center),
                 IconButton(
                     color: Colors.red,
                     onPressed: () {
-                      showAlert(context,
-                          'Are you sure that you want to Delete this Pet ?',1,pet);
+                      showAlert(
+                          context,
+                          'Are you sure that you want to Delete this Pet ?',
+                          1,
+                          pet);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.delete,
                       size: 30,
                     )),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Text("Type : ${pet.type ?? "Unknowm"} ",
+            Text("Type : ${pet.type } ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                style: const TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Text("Gender : ${pet.gender ?? "Unknowm"}",
+            Text("Gender : ${pet.gender }",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                style: const TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text("Birth Day : ${pet.age ?? "Unknowm"}",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                style: const TextStyle(fontSize: 15, fontFamily: 'DMSans'),
                 textAlign: TextAlign.center),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             StreamBuilder<DocumentSnapshot<myUser>>(
-                stream:DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...');
-                }
-                var user = snapshot.data;
-                return Text("Owner : ${user!.data()!.Name!} ",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
-                    textAlign: TextAlign.center);
-              }
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            StreamBuilder<DocumentSnapshot<myUser>>(
-                stream:DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+                stream:
+                    DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: MyColors.primaryColor,
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Some Thing went Wrong ...');
+                    return const Text('Some Thing went Wrong ...');
                   }
                   var user = snapshot.data;
-                return QrImage(
-                  data:
-                      'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${user!.data()!.phone}',
-                  size: 120,
-                );
-              }
+                  return Text("Owner : ${user!.data()!.Name!} ",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          const TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                      textAlign: TextAlign.center);
+                }),
+            const SizedBox(
+              height: 20,
             ),
+            StreamBuilder<DocumentSnapshot<myUser>>(
+                stream:
+                    DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: MyColors.primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Text('Some Thing went Wrong ...');
+                  }
+                  var user = snapshot.data;
+                  return QrImage(
+                    data:
+                        'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${user!.data()!.phone}',
+                    size: 120,
+                  );
+                }),
             ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
-                onPressed: () async {
-                  String path = await createQrPicture(
-                      'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
-                  final success = await GallerySaver.saveImage(path);
-                  success!
-                      ? showAlert(
-                          context, 'The image has been saved successfully ',0,pet)
-                      : showAlert(context, 'fail to Save',0,pet);
-                },
-                child: Icon(
-                  Icons.download,
-                  size: 30,
-                )),
+              style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+              onPressed: () async {
+                String path = await createQrPicture(
+                    'Name : ${pet.Name}\nOwner : ${pet.ownerName}\nOwner Phone : ${pet.ownerPhone}');
+                final success = await GallerySaver.saveImage(path);
+                success!
+                    ? showAlert(
+                        context, 'The QR has been saved successfully ', 0, pet)
+                    : showAlert(context, 'fail to Save', 0, pet);
+              },
+              child: const Icon(
+                Icons.download,
+                size: 30,
+              ),
+            ),
           ],
         ),
       ),
@@ -208,60 +214,62 @@ class _petInfoScreenState extends State<petInfoScreen> {
     return path;
   }
 
-  void showAlert(BuildContext context, String txt, int x,Pet pet) {
+  void showAlert(BuildContext context, String txt, int x, Pet pet) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Center(
             child:
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.center, children: [
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 txt,
-                style: TextStyle(fontSize: 15, fontFamily: 'DMSans'),
+                style: const TextStyle(fontSize: 15, fontFamily: 'DMSans'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
-              x==0?
-              ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Ok',
-                    style: TextStyle(fontFamily: 'DMSans'),
-                  )):Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      style:
-                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
-                      onPressed: () {
-                        DataBaseUtils.DeletePet(pet);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(fontFamily: 'DMSans'),
-                      )),
-                  SizedBox(width: 10,),
-                  ElevatedButton(
-                      style:
-                      ElevatedButton.styleFrom(primary: MyColors.primaryColor),
+              x == 0
+                  ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: MyColors.primaryColor),
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text(
-                        'No',
+                      child: const Text(
+                        'Ok',
                         style: TextStyle(fontFamily: 'DMSans'),
                       ))
-                ],
-              )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: MyColors.primaryColor),
+                            onPressed: () {
+                              DataBaseUtils.DeletePet(pet);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(fontFamily: 'DMSans'),
+                            )),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: MyColors.primaryColor),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'No',
+                              style: TextStyle(fontFamily: 'DMSans'),
+                            ))
+                      ],
+                    )
             ]),
           ),
         );

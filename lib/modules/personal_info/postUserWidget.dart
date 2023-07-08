@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,20 +22,13 @@ class userPostsWidget extends StatefulWidget {
 }
 
 class _userPostsWidgetState extends State<userPostsWidget> {
+
   var contentController = TextEditingController();
-
-  // var typeController = TextEditingController();
-  // var petController = TextEditingController();
-
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
-
   String? ImageURL;
-
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
-
   File? _photo;
-
   final ImagePicker _picker = ImagePicker();
 
   Future imgFromGallery() async {
@@ -75,10 +67,18 @@ class _userPostsWidgetState extends State<userPostsWidget> {
         await ref.getDownloadURL().then((value) {
           ImageURL = value;
         });
+      } else if (postType == "Missing") {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Missing/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
       } else {
         final ref = firebase_storage.FirebaseStorage.instance
             .ref()
-            .child("PostImages/$fileName");
+            .child("PostImages/Adaption/$fileName");
         await ref.putFile(_photo!);
         await ref.getDownloadURL().then((value) {
           ImageURL = value;
@@ -89,163 +89,169 @@ class _userPostsWidgetState extends State<userPostsWidget> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+
     var provider = Provider.of<UserProvider>(context);
     var date = DateTime.fromMillisecondsSinceEpoch(widget.post.dateTime);
     var finalDate = DateFormat('hh:mm a').format(date);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-      child:
-      StreamBuilder<DocumentSnapshot<myUser>>(
-        stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: MyColors.primaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+      child: StreamBuilder<DocumentSnapshot<myUser>>(
+          stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: MyColors.primaryColor,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return const Text('Some Thing went Wrong ...');
+            }
+            var user = snapshot.data;
+            return Card(
+              color: const Color(0xfff1f1f1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                    child: Row(
+                      children: [
+                        user!.data()!.Image != null
+                            ? CircleAvatar(
+                                radius: 20,
+                                backgroundImage:
+                                    NetworkImage(user.data()!.Image!),
+                              )
+                            : const Icon(
+                                Icons.person,
+                              ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: Text(user.data()!.Name,
+                              style: const TextStyle(
+                                  fontFamily: 'DMSans', color: Colors.grey)),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  showSheet();
+                                },
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.black,
+                                )),
+                            IconButton(
+                                onPressed: () {
+                                  showAlert();
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                )),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(widget.post.Content,
+                                maxLines: 10,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontFamily: 'DMSans', fontSize: 14)),
+                          ],
+                        )),
+                        const SizedBox(
+                          width: 2,
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: SizedBox.fromSize(
+                            size: const Size.fromRadius(48),
+                            child: Image.network(widget.post.Image!,
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.phone),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                              user.data()!.phone,
+                              style:
+                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.pin_drop),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                            user.data()!.address.length>9?user.data()!.address.substring(0,8)
+                              :user.data()!.address,
+                              style:
+                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                        Flexible(
+                          child: Text(
+                            finalDate,
+                            style: const TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
             );
-          } else if (snapshot.hasError) {
-            return Text('Some Thing went Wrong ...');
-          }
-          var user = snapshot.data;
-          return Card(
-            color: Color(0xfff1f1f1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                  child: Row(
-                    children: [
-                      user!.data()!.Image != null
-                          ? CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(user.data()!.Image!),
-                            )
-                          : Icon(
-                              Icons.person,
-                            ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Flexible(
-                        child: Text(user.data()!.Name,
-                            style:
-                                TextStyle(fontFamily: 'DMSans', color: Colors.grey)),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                showSheet();
-                              },
-                              icon: Icon(
-                                Icons.edit,
-                                color: Colors.black,
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                showAlert();
-                              },
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              )),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(widget.post.Content,
-                              maxLines: 10,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontFamily: 'DMSans', fontSize: 14)),
-                        ],
-                      )),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: SizedBox.fromSize(
-                          size: Size.fromRadius(48),
-                          child:
-                              Image.network(widget.post.Image!, fit: BoxFit.cover),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.phone),
-                          SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            user.data()!.phone,
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.pin_drop),
-                          SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            user.data()!.address,
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          )
-                        ],
-                      ),
-                      SizedBox(width: 3,),
-                      Flexible(
-                        child: Text(
-                          finalDate,
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        }
-      ),
+          }),
     );
   }
 
@@ -257,11 +263,11 @@ class _userPostsWidgetState extends State<userPostsWidget> {
           title: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
+              const Text(
                 'Are you sure that you want to Delete this Post ?',
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -273,8 +279,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                       // DataBaseUtils.DeleteImg(widget.post.Image!);
                       Navigator.pop(context);
                     },
-                    child: Text('Yes')),
-                SizedBox(
+                    child: const Text('Yes')),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -283,7 +289,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('No')),
+                    child: const Text('No')),
               ])
             ]),
           ),
@@ -315,12 +321,12 @@ class _userPostsWidgetState extends State<userPostsWidget> {
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
                 // height: MediaQuery.of(context).size.height * .9,
                 child: Container(
-                  padding: EdgeInsets.only(top: 10, right: 20, left: 20),
+                  padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -339,7 +345,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                 child: _photo != null
                                     ? Material(
                                         elevation: 0,
-                                        shape: RoundedRectangleBorder(),
+                                        shape: const RoundedRectangleBorder(),
                                         child: Container(
                                           width: 100,
                                           height: 100,
@@ -347,7 +353,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                         ))
                                     : Material(
                                         elevation: 0,
-                                        shape: RoundedRectangleBorder(),
+                                        shape: const RoundedRectangleBorder(),
                                         child: Container(
                                           width: 100,
                                           height: 100,
@@ -358,7 +364,7 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                       ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             TextFormField(
@@ -368,61 +374,58 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                               keyboardType: TextInputType.text,
                               decoration: InputDecoration(
                                   contentPadding:
-                                      EdgeInsets.symmetric(vertical: 20),
+                                      const EdgeInsets.symmetric(vertical: 20),
                                   hintText: " ${widget.post.Content} ",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: MyColors.primaryColor),
                                   )),
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                             DropdownButtonFormField(
-                                  value: selectedPet,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedPet = newValue!;
-                                    });
-                                  },
-                                  items: items.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(' $value ',
-                                          style:
-                                              TextStyle(fontFamily: 'DMSans')),
-                                    );
-                                  }).toList(),
-                                ),
-
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             DropdownButtonFormField(
-                                  value: selectedValue,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedValue = newValue!;
-                                    });
-                                  },
-                                  items: Type.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(' $value ',
-                                          style:
-                                              TextStyle(fontFamily: 'DMSans')),
-                                    );
-                                  }).toList(),
-                                ),
-                            SizedBox(
+                              value: selectedPet,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedPet = newValue!;
+                                });
+                              },
+                              items: items.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(' $value ',
+                                      style: const TextStyle(fontFamily: 'DMSans')),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            DropdownButtonFormField(
+                              value: selectedValue,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedValue = newValue!;
+                                });
+                              },
+                              items: Type.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(' $value ',
+                                      style: const TextStyle(fontFamily: 'DMSans')),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(
                               height: 5,
                             ),
                             ElevatedButton(
@@ -430,12 +433,15 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                   primary: MyColors.primaryColor,
                                 ),
                                 onPressed: () {
-                                  uploadFile(selectedValue, selectedPet).then((value){
+                                  uploadFile(selectedValue, selectedPet)
+                                      .then((value) {
                                     DataBaseUtils.updatePost(
                                         widget.post,
                                         contentController.text,
                                         selectedValue,
-                                        ImageURL == null ? widget.post.Image : ImageURL,
+                                        ImageURL == null
+                                            ? widget.post.Image
+                                            : ImageURL,
                                         selectedPet);
                                     Navigator.pop(context);
                                   });
@@ -451,9 +457,9 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                   // Navigator.pop(context);
                                   setState(() {});
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Update',
-                                  style: TextStyle(fontFamily: 'DMSans'),
+                                  style: const TextStyle(fontFamily: 'DMSans'),
                                 )),
                           ],
                         ),

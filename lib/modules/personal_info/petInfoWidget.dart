@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_care/modules/petInfo/petInfoScreen.dart';
 import 'package:pet_care/shared/colors.dart';
@@ -18,9 +17,9 @@ class petInfoWidget extends StatelessWidget {
         Navigator.pushNamed(context, petInfoScreen.routeName, arguments: pet);
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
         child: Card(
-          color: Color(0xfff1f1f1),
+          color: const Color(0xfff1f1f1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -29,7 +28,7 @@ class petInfoWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -48,7 +47,7 @@ class petInfoWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -58,11 +57,11 @@ class petInfoWidget extends StatelessWidget {
                               // crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Text(
                                   pet.Name.length<8?
                                   "${pet.Name}":"${pet.Name.substring(0,8)}...",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontFamily: 'DMSans', fontSize: 18),
                                 ),
                               ],
@@ -71,14 +70,14 @@ class petInfoWidget extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               pet.gender == 'Male'
                                   ? Icon(Icons.male,
                                   size: 40, color: Colors.grey.shade700)
                                   : Icon(Icons.female,
                                   size: 40, color: Colors.grey.shade700),
                               pet.type == "Other"
-                                  ? Icon(
+                                  ? const Icon(
                                 Icons.question_mark,
                                 size: 30,
                               )
@@ -107,11 +106,11 @@ class petInfoWidget extends StatelessWidget {
           title: Center(
             child:
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
+              const Text(
                 'Are you sure that you want to Delete this Pet ?',
                 style: TextStyle(fontFamily: 'DMSans',fontSize: 15),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -122,8 +121,8 @@ class petInfoWidget extends StatelessWidget {
                       DataBaseUtils.DeletePet(pet);
                       Navigator.pop(context);
                     },
-                    child: Text('Yes',style: TextStyle(fontFamily: 'DMSans'),)),
-                SizedBox(
+                    child: const Text('Yes',style: TextStyle(fontFamily: 'DMSans'),)),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -132,7 +131,7 @@ class petInfoWidget extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('No',style: TextStyle( fontFamily: 'DMSans'),)),
+                    child: const Text('No',style: TextStyle( fontFamily: 'DMSans'),)),
               ])
             ]),
           ),

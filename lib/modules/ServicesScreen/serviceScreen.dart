@@ -15,10 +15,11 @@ class serviceScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0.0,
           backgroundColor: Colors.transparent,
-        leading: BackButton(color: MyColors.primaryColor),
-        title:Text('Services',style: TextStyle(fontFamily: 'DMSans',fontStyle: FontStyle.italic,color: MyColors.primaryColor)),
+        leading: const BackButton(color: MyColors.primaryColor),
+        title:const Text('Services',style: TextStyle(fontFamily: 'DMSans',fontStyle: FontStyle.italic,color: MyColors.primaryColor)),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
           child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -28,19 +29,19 @@ class serviceScreen extends StatelessWidget {
               stream: DataBaseUtils.readServicesFromFirestore(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(
                       color: MyColors.primaryColor,
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...',style: TextStyle(fontFamily: 'DMSans'),);
+                  return const Text('Some Thing went Wrong ...',style: TextStyle(fontFamily: 'DMSans'),);
                 }
                 var services = snapshot.data?.docs.map((e) => e.data()).toList();
                 return ListView.builder(
                   reverse: true,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return serviceWidget(services![index]);
                   },

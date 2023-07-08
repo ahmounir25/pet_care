@@ -1,11 +1,6 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/dataBase/dataBaseUtilities.dart';
 import 'package:pet_care/models/Pet.dart';
 import 'package:pet_care/models/myUser.dart';
@@ -15,8 +10,6 @@ import 'package:pet_care/modules/personal_info/postUserWidget.dart';
 import 'package:pet_care/modules/petInfo/addPetScreen.dart';
 import 'package:pet_care/shared/colors.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:path/path.dart' as Path;
 import '../../models/Posts.dart';
 import '../../providers/userProvider.dart';
 
@@ -38,7 +31,7 @@ class _profileScreenState extends State<profileScreen> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: MyColors.primaryColor,
             )),
@@ -46,7 +39,7 @@ class _profileScreenState extends State<profileScreen> {
         elevation: 0,
         actions: [
           PopupMenuButton(
-            icon: Icon(Icons.settings, color: MyColors.primaryColor),
+            icon: const Icon(Icons.settings, color: MyColors.primaryColor),
             onSelected: (value) {
               Navigator.pushNamed(context, editScreen.routeName);
             },
@@ -62,6 +55,7 @@ class _profileScreenState extends State<profileScreen> {
           )
         ],
       ),
+
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -72,19 +66,19 @@ class _profileScreenState extends State<profileScreen> {
                   DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(
                       color: MyColors.primaryColor,
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Text('Some Thing went Wrong ...');
+                  return const Text('Some Thing went Wrong ...');
                 }
                 var user = snapshot.data;
                 return ListView.builder(
                   reverse: true,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     // print(pet?.length);
                     return Padding(
@@ -99,37 +93,37 @@ class _profileScreenState extends State<profileScreen> {
                               : CircleAvatar(
                                   backgroundColor: Colors.grey.shade300,
                                   radius: 100,
-                                  backgroundImage: AssetImage(
+                                  backgroundImage: const AssetImage(
                                     "assets/images/defaultUser.png",
                                     // fit: BoxFit.cover,
                                   ),
                                 ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(user!.data()!.Name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style:
-                                  TextStyle(fontFamily: 'DMSans', fontSize: 16),
+                                  const TextStyle(fontFamily: 'DMSans', fontSize: 16),
                               textAlign: TextAlign.center),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text("Email : ${user!.data()!.email} ",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style:
-                                  TextStyle(fontFamily: 'DMSans', fontSize: 14),
+                                  const TextStyle(fontFamily: 'DMSans', fontSize: 14),
                               textAlign: TextAlign.center),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text("Address : ${user!.data()!.address}",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style:
-                                  TextStyle(fontFamily: 'DMSans', fontSize: 14),
+                                  const TextStyle(fontFamily: 'DMSans', fontSize: 14),
                               textAlign: TextAlign.center),
                         ],
                       ),
@@ -139,7 +133,7 @@ class _profileScreenState extends State<profileScreen> {
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Flexible(
@@ -148,13 +142,13 @@ class _profileScreenState extends State<profileScreen> {
                 stream: DataBaseUtils.readPetFromFirestore(provider.user!.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: MyColors.primaryColor,
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Some Thing went Wrong ...',
                       style: TextStyle(fontFamily: 'DMSans'),
                     );
@@ -162,7 +156,7 @@ class _profileScreenState extends State<profileScreen> {
                   var pet = snapshot.data?.docs.map((e) => e.data()).toList();
                   return ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       // print(pet?.length);
                       return petInfoWidget(pet![index]);
@@ -172,24 +166,26 @@ class _profileScreenState extends State<profileScreen> {
                 },
               ),
             ),
-            Text('My Posts',
+
+            const Text('My Posts',
                 style: TextStyle(
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.bold,
                     fontSize: 18)),
+
             Flexible(
               fit: FlexFit.loose,
               child: StreamBuilder<QuerySnapshot<Posts>>(
                 stream: DataBaseUtils.readPostsFromFirestore(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: MyColors.primaryColor,
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Some Thing went Wrong ...',
                       style: TextStyle(fontFamily: 'DMSans'),
                     );
@@ -207,7 +203,7 @@ class _profileScreenState extends State<profileScreen> {
                   return ListView.builder(
                     reverse: true,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       // print(pet?.length);
                       return userPostsWidget(post![index]);
@@ -226,7 +222,7 @@ class _profileScreenState extends State<profileScreen> {
           Navigator.pushNamed(context, addPetScreen.routeName);
         },
         backgroundColor: MyColors.primaryColor,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

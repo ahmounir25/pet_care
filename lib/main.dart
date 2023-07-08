@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,8 @@ import 'package:provider/provider.dart';
 
 import 'modules/QrCode/QrScanning.dart';
 
-void main() async{
+void main() async
+{
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -56,9 +56,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),
-      initialRoute: provider.userAuth == null
-          ? LoginScreen.routeName
-          : homeScreen.routeName,
+      initialRoute:
+      provider.userAuth == null ? LoginScreen.routeName : homeScreen.routeName,
       routes: {
         createAccountScreen.routeName:(context) => createAccountScreen(),
         LoginScreen.routeName:(context) => LoginScreen(),

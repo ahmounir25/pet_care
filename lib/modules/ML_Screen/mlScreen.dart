@@ -47,20 +47,20 @@ class _mlScreenState extends State<mlScreen> {
 
   Future Predict() async {
     if (_photo == null) return "";
-
+    showLoading();
     String base64 = base64Encode(_photo!.readAsBytesSync());
-
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
-    var response = await http.post(
-        Uri.parse("https://bce9-35-185-194-85.ngrok-free.app/predict"),
-        body: base64,
-        headers: requestHeaders);
-
-    print(response.body);
-
+    var response;
+     await http.post(
+        Uri.parse("https://e82f-34-145-168-239.ngrok-free.app/predict"), body: base64,
+         headers: requestHeaders).then((value){
+           response=value;
+          Navigator.pop(context);
+    });
+    // print(response.body);
     setState(() {
       body = response.body;
       final jsonResponse = json.decode(body!);
@@ -69,9 +69,9 @@ class _mlScreenState extends State<mlScreen> {
       // Convert output to a List<String>
       outputList = List<String>.from(output);
 
-      outputList.forEach((element) {
-        print(element);
-      });
+      // outputList.forEach((element) {
+      //   print(element);
+      // });
     });
   }
 
@@ -115,6 +115,8 @@ class _mlScreenState extends State<mlScreen> {
     var foundPosts=[];
     return Scaffold(
       appBar: AppBar(
+        title: Text('Search by Image',style: TextStyle(color: MyColors.primaryColor,fontFamily: 'DMSans')),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: BackButton(color: MyColors.primaryColor),
@@ -177,6 +179,12 @@ class _mlScreenState extends State<mlScreen> {
             ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: MyColors.primaryColor),
                 onPressed: () {
+                  if(_photo==null){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text(
+                          "Please Add Image of your lost pet and choose its type" ,
+                          style: TextStyle(fontFamily: 'DMSans'),)));
+                  }
                   Predict();
                 },
                 child: Text('Search',style:TextStyle(fontFamily: 'DMSans'))),
@@ -213,7 +221,8 @@ class _mlScreenState extends State<mlScreen> {
                       }
                     }
                     // print(foundPosts.length);
-                      for (int k = 0; k < substrings.length; k++) {
+                      for (int k = 0; k < substrings.length; k++)
+                      {
                         for(int l=0;l<foundPosts.length;l++){
                         if (foundPosts[l].Image!.contains(substrings[k])) {
                           latest.add(foundPosts[l]);
@@ -223,11 +232,9 @@ class _mlScreenState extends State<mlScreen> {
                     // print(latest.length);
                   }
                   return ListView.builder(
-                    // reverse: true,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      // print(pet?.length);
                       return postWiget(latest![index]);
                     },
                     itemCount: latest?.length ?? 0,
@@ -235,13 +242,6 @@ class _mlScreenState extends State<mlScreen> {
                 },
               ),
             ),
-
-            // Column(
-            //   children: [
-            //     Text(outputList.isEmpty?"data":outputList.toString()),
-            //   ]
-            //
-            // )
           ],
         ),
       ),
@@ -254,28 +254,42 @@ class _mlScreenState extends State<mlScreen> {
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
-              child: new Wrap(
+              child: Wrap(
                 children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery',
+                  ListTile(
+                      leading: Icon(Icons.photo_library),
+                      title: const Text('Gallery',
                           style: TextStyle(fontFamily: 'DMSans')),
                       onTap: () {
                         imgFromGallery();
                         Navigator.of(context).pop();
                       }),
-                  // new ListTile(
-                  //   leading: new Icon(Icons.photo_camera),
-                  //   title: new Text('Camera'),
-                  //   onTap: () {
-                  //     imgFromCamera();
-                  //     Navigator.of(context).pop();
-                  //   },
-                  // ),
                 ],
               ),
             ),
           );
         });
   }
+
+  void showLoading() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  CircularProgressIndicator(color: MyColors.primaryColor,),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(fontFamily: 'DMSans', fontSize: 12),
+                  ),
+                ]),
+          ),
+        );
+      },
+    );
+  }
+
 }

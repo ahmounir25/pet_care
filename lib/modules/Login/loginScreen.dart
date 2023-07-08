@@ -24,6 +24,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
   var emailController = TextEditingController();
   var passController = TextEditingController();
   bool hidePass=true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -42,25 +43,25 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 20),
+              margin: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Welcome Back',
-                    style: TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.bold, fontSize: 25),
+                    style: const TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.bold, fontSize: 25),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
-                  Image(
-                    image: AssetImage('assets/images/login.png'),
+                  const Image(
+                    image: const AssetImage('assets/images/login.png'),
                     fit: BoxFit.fitWidth,
                     width: double.infinity,
                     // height: MediaQuery.of(context).size.height*.42,
 
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Form(
@@ -78,12 +79,12 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                    BorderSide(color: MyColors.primaryColor),
+                                    const BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                    BorderSide(color: MyColors.primaryColor),
+                                    const BorderSide(color: MyColors.primaryColor),
                               )),
                           validator: (value) {
                             final bool emailValid = RegExp(
@@ -97,7 +98,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                             return null;
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         TextFormField(
@@ -109,12 +110,12 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                    BorderSide(color: MyColors.primaryColor),
+                                    const BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                    BorderSide(color: MyColors.primaryColor),
+                                    const BorderSide(color: MyColors.primaryColor),
                               ),
                             suffixIcon: IconButton(onPressed: (){
                               setState(() {
@@ -129,7 +130,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                             return null;
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         InkWell(
@@ -137,32 +138,32 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               viewModel.resetPassword(
                                   emailController.text, context);
                             },
-                            child: Text(
+                            child: const Text(
                               "Forget Password" ,
                               style: TextStyle(
                                   fontFamily: 'DMSans',
                                   color: MyColors.primaryColor,
                                   decoration: TextDecoration.underline),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               primary: MyColors.primaryColor,
-                              minimumSize: Size.fromHeight(50),
+                              minimumSize: const Size.fromHeight(50),
                             ),
                             onPressed: () {
                               ValidateForm();
                             },
-                            child: Text(
+                            child: const Text(
                               'LogIn',
                               style: TextStyle(
                                 fontFamily: 'DMSans',
                                 fontSize: 18
                               ),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         InkWell(
@@ -170,7 +171,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
                               Navigator.pushReplacementNamed(
                                   context, createAccountScreen.routeName);
                             },
-                            child: Text(
+                            child: const Text(
                               "Don't have an account ?",
                               style: TextStyle(
                                   fontFamily: 'DMSans',
@@ -191,7 +192,7 @@ class _LoginScreenState extends BaseView<login_vm, LoginScreen>
 
   void ValidateForm() {
     if (FormKey.currentState?.validate() == true) {
-      viewModel.login(emailController.text, passController.text);
+      viewModel.login(emailController.text.trim(), passController.text);
     }
   }
 

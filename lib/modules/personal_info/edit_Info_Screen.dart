@@ -40,7 +40,7 @@ class _editScreenState extends State<editScreen> {
     setState(() {
       if (pickedFile != null) {
         _photo = File(pickedFile.path);
-        uploadFile();
+        // uploadFile();
       } else {
         print('No image selected.');
       }
@@ -70,7 +70,7 @@ class _editScreenState extends State<editScreen> {
     var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Your Information',style: TextStyle(
+        title: const Text('Edit Your Information',style: TextStyle(
           color: MyColors.primaryColor,
             fontFamily: 'DMSans',
             fontSize: 16),),
@@ -81,7 +81,7 @@ class _editScreenState extends State<editScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_rounded,
             color: MyColors.primaryColor,
           ),
@@ -98,19 +98,19 @@ class _editScreenState extends State<editScreen> {
                   stream: DataBaseUtils.readUserInfoFromFirestore(provider.user!.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(
                           color: MyColors.primaryColor,
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return Text('Some Thing went Wrong ...');
+                      return const Text('Some Thing went Wrong ...');
                     }
                     var user = snapshot.data;
                     return ListView.builder(
                       reverse: true,
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         // print(pet?.length);
                         return Column(
@@ -140,16 +140,16 @@ class _editScreenState extends State<editScreen> {
                                                     endRadius: 100,
                                                     glowColor:
                                                         Colors.purpleAccent,
-                                                    duration: Duration(
+                                                    duration: const Duration(
                                                         milliseconds: 2000),
                                                     repeat: true,
                                                     showTwoGlows: true,
                                                     repeatPauseDuration:
-                                                        Duration(
+                                                        const Duration(
                                                             milliseconds: 100),
                                                     child: Material(
                                                       elevation: 0,
-                                                      shape: CircleBorder(),
+                                                      shape: const CircleBorder(),
                                                       child: user!
                                                                   .data()!
                                                                   .Image ==
@@ -160,7 +160,7 @@ class _editScreenState extends State<editScreen> {
                                                                   Colors
                                                                       .grey.shade300,
                                                               backgroundImage:
-                                                                  AssetImage(
+                                                                  const AssetImage(
                                                                       'assets/images/AddImage.png'))
                                                           : CircleAvatar(
                                                               radius: 75,
@@ -174,7 +174,7 @@ class _editScreenState extends State<editScreen> {
                                                     ),
                                                   )),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       TextFormField(
@@ -186,17 +186,17 @@ class _editScreenState extends State<editScreen> {
                                               gapPadding: 3,
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             )),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       TextFormField(
@@ -208,17 +208,17 @@ class _editScreenState extends State<editScreen> {
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             )),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       TextFormField(
@@ -230,37 +230,39 @@ class _editScreenState extends State<editScreen> {
                                               gapPadding: 3,
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: MyColors.primaryColor),
                                             )),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                       ),
                                       ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              minimumSize: Size.fromHeight(50),
+                                              minimumSize: const Size.fromHeight(50),
                                               primary: MyColors.primaryColor),
                                           onPressed: () {
-                                            setState(() {
-                                              DataBaseUtils.updateUser(
-                                                user!.data()!,
-                                                fNameController.text,
-                                                phoneController.text,
-                                                addressController.text,
-                                                ImageURL == null
-                                                    ? user!.data()!.Image!
-                                                    : ImageURL,);
-                                              Navigator.pop(context);
-                                            });
+                                             showLoading();
+                                              uploadFile().then((value) {
+                                                DataBaseUtils.updateUser(
+                                                  user!.data()!,
+                                                  fNameController.text,
+                                                  phoneController.text,
+                                                  addressController.text,
+                                                  ImageURL ?? user!.data()!.Image!,);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+
+                                              }
+                                              );
                                           },
-                                          child: Text(
+                                          child: const Text(
                                             'Save',
                                             style: TextStyle(
                                                 fontFamily: 'DMSans',
@@ -295,7 +297,7 @@ class _editScreenState extends State<editScreen> {
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
                       title: new Text('Gallery',
-                          style: TextStyle(fontFamily: 'DMSans')),
+                          style: const TextStyle(fontFamily: 'DMSans')),
                       onTap: () {
                         imgFromGallery();
                         Navigator.of(context).pop();
@@ -313,6 +315,27 @@ class _editScreenState extends State<editScreen> {
             ),
           );
         });
+  }
+
+  void showLoading() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const CircularProgressIndicator(color: MyColors.primaryColor),
+                  const Text(
+                    'Loading...',
+                    style: TextStyle(fontFamily: 'DMSans', fontSize: 12),
+                  ),
+                ]),
+          ),
+        );
+      },
+    );
   }
 }
 

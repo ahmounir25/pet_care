@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
 import 'package:provider/provider.dart';
-
 import '../../dataBase/dataBaseUtilities.dart';
 import '../../models/Posts.dart';
 import '../../models/myUser.dart';
@@ -22,17 +21,13 @@ class addPostScreen extends StatefulWidget {
 }
 
 class _addPostScreenState extends State<addPostScreen> {
+
   var contentController = TextEditingController();
-
   var typeController = TextEditingController();
-
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
-
   String? ImageURL;
-
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
-
   File? _photo;
   List<String> Type = ["Missing", "Found", "Adaption"];
   var selectedValue = 'Missing';
@@ -48,12 +43,6 @@ class _addPostScreenState extends State<addPostScreen> {
   ];
   final ImagePicker _picker = ImagePicker();
 
-  // @override
-  // // void initState() {
-  // //   // TODO: implement initState
-  // //   super.initState();
-  // //   viewModel.navigator = this; //important .......................
-  // // }
 
   Future imgFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -91,10 +80,19 @@ class _addPostScreenState extends State<addPostScreen> {
         await ref.getDownloadURL().then((value) {
           ImageURL = value;
         });
-      } else {
+      } else if(postType == "Missing"){
         final ref = firebase_storage.FirebaseStorage.instance
             .ref()
-            .child("PostImages/$fileName");
+            .child("PostImages/Missing/$fileName");
+        await ref.putFile(_photo!);
+        await ref.getDownloadURL().then((value) {
+          ImageURL = value;
+        });
+      }
+      else{
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child("PostImages/Adaption/$fileName");
         await ref.putFile(_photo!);
         await ref.getDownloadURL().then((value) {
           ImageURL = value;
@@ -110,19 +108,19 @@ class _addPostScreenState extends State<addPostScreen> {
     var provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(color: MyColors.primaryColor),
-        title: Text('Add Post',style: TextStyle(fontFamily: 'DMSans',color: MyColors.primaryColor)),
+        leading: const BackButton(color: MyColors.primaryColor),
+        title: const Text('Add Post',style: TextStyle(fontFamily: 'DMSans',color: MyColors.primaryColor)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(top: 10, right: 20, left: 20),
+                padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -142,7 +140,7 @@ class _addPostScreenState extends State<addPostScreen> {
                                   ? Material(
                                 // Replace this child with your own
                                   elevation: 0,
-                                  shape: RoundedRectangleBorder(),
+                                  shape: const RoundedRectangleBorder(),
                                   child: Container(
                                     width: 150,
                                     height: 150,
@@ -152,15 +150,15 @@ class _addPostScreenState extends State<addPostScreen> {
                                 shape: BoxShape.rectangle,
                                 endRadius: 80,
                                 glowColor: Colors.purpleAccent,
-                                duration: Duration(milliseconds: 2000),
+                                duration: const Duration(milliseconds: 2000),
                                 repeat: true,
                                 showTwoGlows: true,
                                 repeatPauseDuration:
-                                Duration(milliseconds: 100),
+                                const Duration(milliseconds: 100),
                                 child: Material(
                                   // Replace this child with your own
                                   elevation: 0,
-                                  shape: RoundedRectangleBorder(),
+                                  shape: const RoundedRectangleBorder(),
                                   child: Container(
                                     width: 150,
                                     height: 150,
@@ -173,7 +171,7 @@ class _addPostScreenState extends State<addPostScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           TextFormField(
@@ -183,17 +181,17 @@ class _addPostScreenState extends State<addPostScreen> {
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                                 contentPadding:
-                                EdgeInsets.symmetric(vertical: 20),
+                                const EdgeInsets.symmetric(vertical: 20),
                                 hintText: " Write your Post ... ",
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                  BorderSide(color: MyColors.primaryColor),
+                                  const BorderSide(color: MyColors.primaryColor),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
-                                  BorderSide(color: MyColors.primaryColor),
+                                  const BorderSide(color: MyColors.primaryColor),
                                 )),
                             validator: (value) {
                               if (value == null || value!.isEmpty) {
@@ -203,12 +201,12 @@ class _addPostScreenState extends State<addPostScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: new Text(
                                       " Please Add Pet's Image " ,
-                                      style: TextStyle(fontFamily: 'DMSans'),)));
+                                      style: const TextStyle(fontFamily: 'DMSans'),)));
                               }
                               return null;
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           TextField(
@@ -217,12 +215,12 @@ class _addPostScreenState extends State<addPostScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                BorderSide(color: MyColors.primaryColor),
+                                const BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                BorderSide(color: MyColors.primaryColor),
+                                const BorderSide(color: MyColors.primaryColor),
                               ),
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -238,7 +236,7 @@ class _addPostScreenState extends State<addPostScreen> {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(' $value ',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontFamily: 'DMSans')),
                                         );
                                       }).toList(),
@@ -246,7 +244,7 @@ class _addPostScreenState extends State<addPostScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           TextField(
@@ -255,12 +253,12 @@ class _addPostScreenState extends State<addPostScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                BorderSide(color: MyColors.primaryColor),
+                                const BorderSide(color: MyColors.primaryColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide:
-                                BorderSide(color: MyColors.primaryColor),
+                                const BorderSide(color: MyColors.primaryColor),
                               ),
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -276,7 +274,7 @@ class _addPostScreenState extends State<addPostScreen> {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(' $value ',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontFamily: 'DMSans')),
                                         );
                                       }).toList(),
@@ -284,7 +282,7 @@ class _addPostScreenState extends State<addPostScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           StreamBuilder<DocumentSnapshot<myUser>>(
@@ -297,6 +295,7 @@ class _addPostScreenState extends State<addPostScreen> {
                                       primary: MyColors.primaryColor,
                                     ),
                                     onPressed: () {
+                                      showLoading();
                                       uploadFile(selectedValue, selectedPet)
                                           .then((value) {
                                         addPost(
@@ -315,11 +314,12 @@ class _addPostScreenState extends State<addPostScreen> {
                                                 .millisecondsSinceEpoch,
                                             ImageURL,
                                             FormKey);
+                                        Navigator.pop(context);
                                       });
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'Add Post',
-                                      style: TextStyle(fontFamily: 'DMSans'),
+                                      style: const TextStyle(fontFamily: 'DMSans'),
                                     ));
                               }),
                         ],
@@ -395,6 +395,27 @@ class _addPostScreenState extends State<addPostScreen> {
         Navigator.pop(context);
       });
     }
+  }
+
+  void showLoading() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  CircularProgressIndicator(color: MyColors.primaryColor),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(fontFamily: 'DMSans', fontSize: 12),
+                  ),
+                ]),
+          ),
+        );
+      },
+    );
   }
 
 }
