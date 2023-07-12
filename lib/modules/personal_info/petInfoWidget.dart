@@ -40,12 +40,25 @@ class petInfoWidget extends StatelessWidget {
                         ),
                       ),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.network(
+                      child:
+                      Image.network(
                         pet.Image ?? "",
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
-                      ),
+                        errorBuilder:  (context, error, stackTrace) {
+                          return Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.transparent,
+                            child: Icon(
+                              Icons.wifi_off,
+                              color: Colors.grey,
+                              size: 50,
+                            ),
+                          );
+                        },
+                      )
                     ),
                     const SizedBox(width: 5),
                     Expanded(

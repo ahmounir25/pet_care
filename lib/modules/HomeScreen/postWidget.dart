@@ -76,7 +76,20 @@ class postWiget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: SizedBox.fromSize(
                         size: Size.fromRadius(48),
-                        child: Image.network(post.Image!, fit: BoxFit.cover),
+                        child: Image.network(post.Image!, fit: BoxFit.cover,
+                        errorBuilder:(context, error, stackTrace) {
+                          return Container(
+                            width: 50,
+                            height: 50,
+                            color: Colors.transparent,
+                            child: Icon(
+                              Icons.wifi_off,
+                              color: Colors.grey,
+                              size: 50,
+                            ),
+                          );
+                        },
+                        ),
                       ),
                     ),
                   ),

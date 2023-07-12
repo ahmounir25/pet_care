@@ -54,7 +54,7 @@ class _mlScreenState extends State<mlScreen> {
     };
     var response;
      await http.post(
-        Uri.parse("https://6ceb-35-199-38-204.ngrok-free.app/predict"), body: base64,
+        Uri.parse("https://d4a3-35-230-76-209.ngrok-free.app/predict"), body: base64,
          headers: requestHeaders).then((value){
            response=value;
           Navigator.pop(context);

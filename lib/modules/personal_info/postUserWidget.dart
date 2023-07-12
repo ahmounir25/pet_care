@@ -22,7 +22,6 @@ class userPostsWidget extends StatefulWidget {
 }
 
 class _userPostsWidgetState extends State<userPostsWidget> {
-
   var contentController = TextEditingController();
   GlobalKey<FormState> FormKey = GlobalKey<FormState>();
   String? ImageURL;
@@ -91,7 +90,6 @@ class _userPostsWidgetState extends State<userPostsWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     var provider = Provider.of<UserProvider>(context);
     var date = DateTime.fromMillisecondsSinceEpoch(widget.post.dateTime);
     var finalDate = DateFormat('hh:mm a').format(date);
@@ -121,7 +119,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     child: Row(
                       children: [
                         user!.data()!.Image != null
@@ -194,8 +193,22 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                           borderRadius: BorderRadius.circular(20),
                           child: SizedBox.fromSize(
                             size: const Size.fromRadius(48),
-                            child: Image.network(widget.post.Image!,
-                                fit: BoxFit.cover),
+                            child: Image.network(
+                              widget.post.Image!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 50,
+                                  height: 50,
+                                  color: Colors.transparent,
+                                  child: Icon(
+                                    Icons.wifi_off,
+                                    color: Colors.grey,
+                                    size: 50,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -217,8 +230,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                             ),
                             Text(
                               user.data()!.phone,
-                              style:
-                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             )
                           ],
                         ),
@@ -229,10 +242,11 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                               width: 3,
                             ),
                             Text(
-                            user.data()!.address.length>9?user.data()!.address.substring(0,8)
-                              :user.data()!.address,
-                              style:
-                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                              user.data()!.address.length > 9
+                                  ? user.data()!.address.substring(0, 8)
+                                  : user.data()!.address,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             )
                           ],
                         ),
@@ -242,7 +256,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                         Flexible(
                           child: Text(
                             finalDate,
-                            style: const TextStyle(fontSize: 10, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.grey),
                           ),
                         )
                       ],
@@ -402,7 +417,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(' $value ',
-                                      style: const TextStyle(fontFamily: 'DMSans')),
+                                      style: const TextStyle(
+                                          fontFamily: 'DMSans')),
                                 );
                               }).toList(),
                             ),
@@ -421,7 +437,8 @@ class _userPostsWidgetState extends State<userPostsWidget> {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(' $value ',
-                                      style: const TextStyle(fontFamily: 'DMSans')),
+                                      style: const TextStyle(
+                                          fontFamily: 'DMSans')),
                                 );
                               }).toList(),
                             ),
