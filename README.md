@@ -1,10 +1,8 @@
 # pet_care
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
+Flutter application for pet owners to help
+them with their missing pets using DL model or for
+adaption process
 
 A few resources to get you started if this is your first Flutter project:
 
